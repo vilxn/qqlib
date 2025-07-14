@@ -98,11 +98,15 @@ bool Renderer::WindowShouldClose(){
 }
 
 void Renderer::BeginDrawing(){
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    
 }
 
 void Renderer::EndDrawing(){
     glfwSwapBuffers(window);
     glfwPollEvents();
+}
+
+void Renderer::ClearBackground(qcore::Color color){
+    glClearColor(color.r / 256, color.g / 256, color.b / 256, color.a / 256);
+    glClear(GL_COLOR_BUFFER_BIT);
 }

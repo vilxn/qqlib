@@ -2,6 +2,7 @@
 #include "glad/glad.h"
 #include "render/shader.h"
 #include "glad/glad.h"
+#include "qcore/qcore.h"
 #include "GLFW/glfw3.h"
 
 class Renderer{
@@ -24,6 +25,8 @@ public:
     void BeginDrawing();
 
     void EndDrawing();
+
+    void ClearBackground(qcore::Color color);
 
     void DrawRectangle(int posX, int posY, float width, float height);
 
