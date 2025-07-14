@@ -62,26 +62,10 @@ void Renderer::Init(){
 }
 
 void Renderer::DrawRectangle(int posX, int posY, float width, float height){
-    int windowWidth, windowHeight;
-    glfwGetWindowSize(window, &windowWidth, &windowHeight);
-
-    float xRatio = 2.0f / (float)windowWidth;
-    float yRatio = 2.0f / (float)windowHeight;
-
-    float recWidth = width * xRatio;
-    float recHeight = height * yRatio;
-
-    float xOffset = posX * xRatio;
-    float yOffset = posY * yRatio;
-
-    qmath::Matrix mat;
-    mat.Scale(recWidth, recHeight, 1);
-    mat.Translate(xOffset, -yOffset, 0.0f);
-    mat.Translate(recWidth - 1, 1 - recHeight, 0.0f);
-    
+    qmath::Matrix transformMat = GetTransformMatrix(posX, posY, width, height);
 
     _shader->Use();
-    _shader->SetUniformMatrix4f("ourMatrix", mat.GetPointer());
+    _shader->SetUniformMatrix4f("ourMatrix", transformMat.GetPointer());
     _shader->SetUniform4f("ourColor", 1, 1, 1, 1);
 
 
@@ -89,16 +73,29 @@ void Renderer::DrawRectangle(int posX, int posY, float width, float height){
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
+void Renderer::BeginDrawing(){
+    
+}
+
+Renderer* Renderer::_renderer = nullptr;
+
+Renderer* Renderer::GetInstance(){
+    if(_renderer == nullptr){
+        _renderer = new Renderer();
+    }
+
+    return _renderer;
+}
+
+Renderer::Renderer(){}
+
 Renderer::~Renderer(){
+    delete _renderer;
     delete _shader;
 }
 
 bool Renderer::WindowShouldClose(){
     return glfwWindowShouldClose(window);
-}
-
-void Renderer::BeginDrawing(){
-    
 }
 
 void Renderer::EndDrawing(){
@@ -107,6 +104,31 @@ void Renderer::EndDrawing(){
 }
 
 void Renderer::ClearBackground(qcore::Color color){
-    glClearColor(color.r / 256, color.g / 256, color.b / 256, color.a / 256);
+    glClearColor(color.r / 256.0f, color.g / 256.0f, color.b / 256.0f, color.a / 256.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+}
+
+qmath::Matrix Renderer::GetTransformMatrix(int posX, int posY, int width, int height){
+    int windowWidth, windowHeight;
+    glfwGetWindowSize(window, &windowWidth, &windowHeight);
+
+    float xRatio = 2.0f / (float)windowWidth;
+    float yRatio = 2.0f / (float)windowHeight;
+
+    float shapeWidth = width * xRatio;
+    float shapeHeight = height * yRatio;
+
+    float xOffset = posX * xRatio;
+    float yOffset = posY * yRatio;
+
+    qmath::Matrix mat;
+    mat.Scale(shapeWidth, shapeHeight, 1);
+    mat.Translate(xOffset, -yOffset, 0.0f);
+    mat.Translate(shapeWidth - 1, 1 - shapeHeight, 0.0f);
+
+    return mat;
+}
+
+GLFWwindow* Renderer::GetWindow() const{
+    return window;
 }

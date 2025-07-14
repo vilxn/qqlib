@@ -2,30 +2,32 @@
 #include <GLFW/glfw3.h>
 
 #include "render/renderer.h"
-#include "math/qmath.h"
 #include "qcore/qcore.h"
 
 #include <iostream>
-#include <string>
-#include <fstream>
-#include <sstream>
 
 
 int main()
 {
-    Renderer renderer;
-    renderer.InitWindow(1000, 600, "qqlib");
-    renderer.Init();
+    Renderer* renderer = Renderer::GetInstance();
+    renderer->InitWindow(1000, 600, "qqlib");
+    renderer->Init();
     
+    GLFWwindow* window = renderer->GetWindow();
 
-    while (!renderer.WindowShouldClose())
+    while (!renderer->WindowShouldClose())
     {
-        renderer.BeginDrawing();
-        renderer.ClearBackground((qcore::Color){20, 20, 20, 256});
+        renderer->BeginDrawing();
+        renderer->ClearBackground(qcore::Color(20, 20, 20, 256));
         
-        renderer.DrawRectangle(10, 10, 400, 20);
+        renderer->DrawRectangle(10, 10, 300, 300);
+        renderer->DrawRectangle(300, 300, 100, 100);
 
-        renderer.EndDrawing();
+        renderer->EndDrawing();
+
+        if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
+            glfwSetWindowShouldClose(window, true);
+        }
     }
  
     glfwTerminate();
