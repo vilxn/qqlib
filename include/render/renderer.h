@@ -6,14 +6,26 @@
 
 class Renderer{
 private:
+    GLFWwindow* window;
+
     Shader* _shader;
 
     unsigned rec_VAO;
 
+    
+
 public:
+    void InitWindow(int width, int height, const char* title);
+
     void Init();
 
-    void DrawRectangle(int posX, int posY, float width, float height, GLFWwindow* window);
+    bool WindowShouldClose();
+
+    void BeginDrawing();
+
+    void EndDrawing();
+
+    void DrawRectangle(int posX, int posY, float width, float height);
 
     ~Renderer();
 };

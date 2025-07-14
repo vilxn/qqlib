@@ -1,8 +1,32 @@
 #include "render/renderer.h"
 #include "render/shader.h"
 #include "math/qmath.h"
+#include "qcore/qcore.h"
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
+
+void Renderer::InitWindow(int width, int height, const char* title){
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    window = glfwCreateWindow(width, height, title, NULL, NULL);
+    if (window == NULL)
+    {
+        std::cout << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        return;
+    }
+    glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+ 
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+        return;
+    }
+}
 
 void Renderer::Init(){
     _shader = new Shader("shaders/vertexshader.glsl", "shaders/fragmentshader.glsl");
@@ -37,7 +61,7 @@ void Renderer::Init(){
     glEnableVertexAttribArray(0);
 }
 
-void Renderer::DrawRectangle(int posX, int posY, float width, float height, GLFWwindow* window){
+void Renderer::DrawRectangle(int posX, int posY, float width, float height){
     int windowWidth, windowHeight;
     glfwGetWindowSize(window, &windowWidth, &windowHeight);
 
@@ -58,7 +82,7 @@ void Renderer::DrawRectangle(int posX, int posY, float width, float height, GLFW
 
     _shader->Use();
     _shader->SetUniformMatrix4f("ourMatrix", mat.GetPointer());
-    _shader->SetUniform3f("ourColor", 1, 1, 1);
+    _shader->SetUniform4f("ourColor", 1, 1, 1, 1);
 
 
     glBindVertexArray(rec_VAO);
@@ -67,4 +91,18 @@ void Renderer::DrawRectangle(int posX, int posY, float width, float height, GLFW
 
 Renderer::~Renderer(){
     delete _shader;
+}
+
+bool Renderer::WindowShouldClose(){
+    return glfwWindowShouldClose(window);
+}
+
+void Renderer::BeginDrawing(){
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void Renderer::EndDrawing(){
+    glfwSwapBuffers(window);
+    glfwPollEvents();
 }

@@ -1,4 +1,7 @@
 #pragma once
+#include "glad/glad.h"
+#include "GLFW/glfw3.h"
+
 
 namespace qcore{
     struct Color{
@@ -8,3 +11,5 @@ namespace qcore{
         unsigned a;
     };
 }
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);

@@ -1,8 +1,8 @@
 #version 460 core
 out vec4 vColor;
 
-uniform vec3 ourColor;
+uniform vec4 ourColor;
 
 void main(){
-    vColor = vec4(ourColor, 1);
+    vColor = ourColor;
 }

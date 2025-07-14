@@ -1,6 +1,5 @@
 #include "render/shader.h"
 #include <glad/glad.h>
-#incude "qcore/qcore.h"
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -59,11 +58,6 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath){
     glDeleteShader(fragment);
 }
 
-void Shader::SetUniform3f(const std::string& name, float v1, float v2, float v3){
-    glUniform3f(glGetUniformLocation(ID, name.c_str()), v1, v2, v3);
-}
-
-
 void Shader::checkCompileErrors(unsigned int shader, std::string type)
 {
     int success;
@@ -96,6 +90,10 @@ void Shader::SetUniformMatrix4f(const std::string& name, const float* value){
     glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_TRUE, value);
 }
 
-void SetUniform4f(const std::string& name, float v1, float v2, float v3, float v4);
+void Shader::SetUniform3f(const std::string& name, float v1, float v2, float v3){
+    glUniform3f(glGetUniformLocation(ID, name.c_str()), v1, v2, v3);
+}
 
-void SetUniform4f(const std::string& name, qcore::Color color);
+void Shader::SetUniform4f(const std::string& name, float v1, float v2, float v3, float v4){
+    glUniform4f(glGetUniformLocation(ID, name.c_str()), v1, v2, v3, v4);
+}

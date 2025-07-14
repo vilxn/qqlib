@@ -13,6 +13,17 @@ namespace qmath{
         void Print();
     };
 
+    struct Vector3{
+        float x;
+        float y;
+        float z;
+    };
+
+    struct Vector2{
+        float x;
+        float y;
+    };
+
     class Matrix{
     private:
         float array[16]{};
