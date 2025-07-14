@@ -1,7 +1,9 @@
+rwildcard=$(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
+
 LIB = -lopengl32 -lglfw3 -lgdi32
 INC = -I./include -L./libs
 OUT = main.exe
-SOURCE = glad.o main.cpp $(wildcard src/*.cpp) $(wildcard src/render/*.cpp) $(wildcard src/math/*.cpp)
+SOURCE = main.cpp $(call rwildcard,./src/,*.cpp *.o)
 
 all: main.exe
 
