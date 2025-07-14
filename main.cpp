@@ -13,7 +13,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
  
 const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 800;
+const unsigned int SCR_HEIGHT = 1200;
 
 
 int main()
@@ -50,7 +50,7 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         
-        renderer.DrawRectangle(210, 430, 400, 200, window);
+        renderer.DrawRectangle(10, 10, 400, 20, window);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

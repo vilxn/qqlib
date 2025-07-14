@@ -55,7 +55,6 @@ void Renderer::DrawRectangle(int posX, int posY, float width, float height, GLFW
     mat.Translate(xOffset, -yOffset, 0.0f);
     mat.Translate(recWidth - 1, 1 - recHeight, 0.0f);
     
-    mat.Print();
 
     _shader->Use();
     _shader->SetUniformMatrix4f("ourMatrix", mat.GetPointer());

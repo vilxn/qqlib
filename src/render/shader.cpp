@@ -1,5 +1,6 @@
 #include "render/shader.h"
 #include <glad/glad.h>
+#incude "qcore/qcore.h"
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -94,3 +95,7 @@ void Shader::Use(){
 void Shader::SetUniformMatrix4f(const std::string& name, const float* value){
     glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_TRUE, value);
 }
+
+void SetUniform4f(const std::string& name, float v1, float v2, float v3, float v4);
+
+void SetUniform4f(const std::string& name, qcore::Color color);
