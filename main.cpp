@@ -18,10 +18,9 @@ int main()
     while (!renderer->WindowShouldClose())
     {
         renderer->BeginDrawing();
-        renderer->ClearBackground(qcore::Color(20, 20, 20, 256));
+        renderer->ClearBackground(Q_WHITE);
         
-        renderer->DrawRectangle(10, 10, 300, 300);
-        renderer->DrawRectangle(300, 300, 100, 100);
+        renderer->DrawCircle(100, 100, 100);
 
         renderer->EndDrawing();
 

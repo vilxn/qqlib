@@ -1,14 +1,18 @@
 #pragma once
 #include "qcore/qcore.h"
+#include "math/qmath.h"
+#include "render/shader.h"
 
 class Shape{
-private:    
+protected:    
     qcore::Color _color = Q_WHITE; 
+
+    unsigned int _VAO;
 
 public:
     void SetColor(qcore::Color newColor);
 
     virtual void Init() = 0;
 
-    virtual void Draw(int posX, int posY, int width, int height) = 0;
+    virtual void Draw(qmath::Matrix& transformMatrix, Shader* shader) = 0;
 };

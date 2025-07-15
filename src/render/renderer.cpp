@@ -59,6 +59,9 @@ void Renderer::Init(){
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
     glEnableVertexAttribArray(0);
+
+    _circle = new Circle();
+    _circle->Init();
 }
 
 void Renderer::DrawRectangle(int posX, int posY, float width, float height){
@@ -71,6 +74,12 @@ void Renderer::DrawRectangle(int posX, int posY, float width, float height){
 
     glBindVertexArray(rec_VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+}
+
+void Renderer::DrawCircle(int posX, int posY, int radius){
+    qmath::Matrix transformMat = GetTransformMatrix(posX, posY, radius * 2, radius * 2);
+
+    _circle->Draw(transformMat, _shader);
 }
 
 void Renderer::BeginDrawing(){

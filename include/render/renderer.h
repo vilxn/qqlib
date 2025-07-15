@@ -5,6 +5,7 @@
 #include "qcore/qcore.h"
 #include "math/qmath.h"
 #include "GLFW/glfw3.h"
+#include "shapes/circle.h"
 
 class Renderer{
 protected:
@@ -13,6 +14,8 @@ protected:
     GLFWwindow* window;
 
     Shader* _shader;
+
+    Circle* _circle;
 
     unsigned rec_VAO;
 
@@ -36,6 +39,8 @@ public:
     void ClearBackground(qcore::Color color);
 
     void DrawRectangle(int posX, int posY, float width, float height);
+
+    void DrawCircle(int posX, int posY, int radius);
 
     ~Renderer();
 
