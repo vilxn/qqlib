@@ -1,5 +1,7 @@
 #include "render/renderer.h"
 #include "render/shader.h"
+#include "shapes/circle.h"
+#include "shapes/rectangle.h"
 #include "math/qmath.h"
 #include "qcore/qcore.h"
 #include "glad/glad.h"
@@ -31,34 +33,8 @@ void Renderer::InitWindow(int width, int height, const char* title){
 void Renderer::Init(){
     _shader = new Shader("shaders/vertexshader.glsl", "shaders/fragmentshader.glsl");
 
-    float vertices[] = {
-        0.0f, 1.0f, 1.0f,
-        0.0f, 0.0f, 1.0f,
-        -1.0f, 0.0f, 1.0f,
-        -1.0f, 1.0f, 1.0f
-    };
-
-    unsigned indices[] = {
-        0, 1, 2,
-        2, 3, 0
-    };
-
-    glCreateVertexArrays(1, &rec_VAO);
-    glBindVertexArray(rec_VAO);
-
-    unsigned rec_VBO;
-    glCreateBuffers(1, &rec_VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, rec_VBO);
-
-    unsigned rec_EBO;
-    glCreateBuffers(1, &rec_EBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rec_EBO);
-
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
-    glEnableVertexAttribArray(0);
+    _rectangle = new Rectangle();
+    _rectangle->Init();    
 
     _circle = new Circle();
     _circle->Init();
@@ -67,13 +43,7 @@ void Renderer::Init(){
 void Renderer::DrawRectangle(int posX, int posY, float width, float height){
     qmath::Matrix transformMat = GetTransformMatrix(posX, posY, width, height);
 
-    _shader->Use();
-    _shader->SetUniformMatrix4f("ourMatrix", transformMat.GetPointer());
-    _shader->SetUniform4f("ourColor", 1, 1, 1, 1);
-
-
-    glBindVertexArray(rec_VAO);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    _rectangle->Draw(transformMat, _shader);
 }
 
 void Renderer::DrawCircle(int posX, int posY, int radius){

@@ -18,9 +18,9 @@ int main()
     while (!renderer->WindowShouldClose())
     {
         renderer->BeginDrawing();
-        renderer->ClearBackground(Q_WHITE);
+        renderer->ClearBackground(Q_BLACK);
         
-        renderer->DrawCircle(100, 100, 100);
+        renderer->DrawRectangle(100, 100, 300, 100);
 
         renderer->EndDrawing();
 

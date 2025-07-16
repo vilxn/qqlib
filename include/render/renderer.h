@@ -1,11 +1,13 @@
 #pragma once
 #include "glad/glad.h"
 #include "render/shader.h"
+#include "shapes/circle.h"
+#include "shapes/rectangle.h"
 #include "glad/glad.h"
 #include "qcore/qcore.h"
 #include "math/qmath.h"
 #include "GLFW/glfw3.h"
-#include "shapes/circle.h"
+
 
 class Renderer{
 protected:
@@ -16,6 +18,8 @@ protected:
     Shader* _shader;
 
     Circle* _circle;
+
+    Rectangle* _rectangle;
 
     unsigned rec_VAO;
 
