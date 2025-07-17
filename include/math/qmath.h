@@ -1,5 +1,7 @@
 #pragma once
 #include <iostream>
+#include <ostream>
+#include <string>
 
 namespace qmath{
     struct Vector4{
@@ -36,6 +38,8 @@ namespace qmath{
         void Print();
         
         float* operator[](int index);
+
+        std::string ToString() const;
         
         Vector4 Multiply(Vector4& vec);
 
@@ -48,5 +52,7 @@ namespace qmath{
         const float* GetPointer() const;
     };
 }
+
+std::ostream& operator << (std::ostream &os, const qmath::Matrix& mat);
 
 

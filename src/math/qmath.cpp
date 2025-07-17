@@ -110,5 +110,24 @@ namespace qmath{
     const float* Matrix::GetPointer() const{
         return array;
     }
+
+    std::string Matrix::ToString() const{
+        std::string res = "";
+
+        for(int i = 0; i < 4; i++){
+            res += "[ "; 
+            for(int j = 0; j < 4; j++){
+                res += std::to_string(array[i * 4 + j]);
+                res += ",\t";
+            }
+            res += " ]\n";
+        }
+
+        return res;
+    }
+}
+
+std::ostream& operator << (std::ostream &os, const qmath::Matrix &mat){
+    return os << mat.ToString();
 }
 
