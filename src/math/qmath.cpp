@@ -2,6 +2,34 @@
 #include <iostream>
 
 namespace qmath{
+    Vector2& Vector2::operator += (const Vector2& v){
+        x += v.x;
+        y += v.y;
+
+        return *this;
+    }
+
+    Vector2& Vector2::operator -= (const Vector2& v){
+        x -= v.x;
+        y -= v.y;
+
+        return *this;
+    }
+
+    Vector2& Vector2::operator *= (const float f){
+        x *= f;
+        y *= f;
+
+        return *this;
+    }
+
+    Vector2& Vector2::operator /= (const float f){
+        x /= f;
+        y /= f;
+
+        return *this;
+    }
+
     float& Vector4::operator[](int index){
         if(index >= 4 || index < 0){
             std::cout << "out of bound";
@@ -130,4 +158,23 @@ namespace qmath{
 std::ostream& operator << (std::ostream &os, const qmath::Matrix &mat){
     return os << mat.ToString();
 }
+
+qmath::Vector2 operator + (const qmath::Vector2& v0, const qmath::Vector2& v1){
+    return (qmath::Vector2){v0.x + v1.x, v0.y + v1.y};
+}
+
+qmath::Vector2 operator - (const qmath::Vector2& v0, const qmath::Vector2& v1){
+    return (qmath::Vector2){v0.x - v1.x, v0.y - v1.y};
+}
+
+qmath::Vector2 operator * (const qmath::Vector2& v0, const float f1){
+    return (qmath::Vector2){v0.x * f1, v0.y * f1};
+}
+
+qmath::Vector2 operator / (const qmath::Vector2& v0, const float f1){
+    return (qmath::Vector2){v0.x / f1, v0.y / f1};
+}
+
+
+
 

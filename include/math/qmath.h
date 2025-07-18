@@ -24,6 +24,14 @@ namespace qmath{
     struct Vector2{
         float x;
         float y;
+
+        Vector2& operator += (const qmath::Vector2& v);
+
+        Vector2& operator -= (const qmath::Vector2& v);
+
+        Vector2& operator *= (const float f);
+
+        Vector2& operator /= (const float f);
     };
 
     class Matrix{
@@ -54,5 +62,15 @@ namespace qmath{
 }
 
 std::ostream& operator << (std::ostream &os, const qmath::Matrix& mat);
+
+qmath::Vector2 operator + (const qmath::Vector2& v0, const qmath::Vector2& v1);
+
+qmath::Vector2 operator - (const qmath::Vector2& v0, const qmath::Vector2& v1);
+
+qmath::Vector2 operator * (const qmath::Vector2& v0, const float f1);
+
+qmath::Vector2 operator / (const qmath::Vector2& v0, const float f1);
+
+
 
 

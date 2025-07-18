@@ -10,31 +10,45 @@
 
 int main()
 {
-    // Renderer* renderer = Renderer::GetInstance();
-    // renderer->InitWindow(1000, 600, "qqlib");
-    // renderer->Init();
+    Renderer* renderer = Renderer::GetInstance();
+    renderer->InitWindow(1000, 600, "qqlib");
+    renderer->Init();
     
-    // GLFWwindow* window = renderer->GetWindow();
+    GLFWwindow* window = renderer->GetWindow();
 
-    // while (!renderer->WindowShouldClose())
-    // {
-    //     renderer->BeginDrawing();
-    //     renderer->ClearBackground(Q_BLACK);
+    float r = 20.0f;
+    qmath::Vector2 pos{r, r};
+    qmath::Vector2 vel{200.0f, 100.0f};
+
+    double current = glfwGetTime();
+    double prev = 0;
+    while (!renderer->WindowShouldClose())
+    {
+        int width, height;
+        glfwGetWindowSize(window, &width, &height);
+
+        prev = current;
+        current = glfwGetTime();
+        double delta = current - prev;
+
+        pos += (vel * (float)delta);
+
+        if(pos.x + r > width || pos.x - r < 0) vel.x *= -1;
+        if(pos.y + r > height || pos.y - r < 0) vel.y *= -1;
+
+        renderer->BeginDrawing();
+        renderer->ClearBackground(Q_WHITE);
         
-    //     renderer->DrawRectangle(100, 100, 300, 100);
+        renderer->DrawCircle(pos.x, pos.y, r);
 
-    //     renderer->EndDrawing();
+        renderer->EndDrawing();
 
-    //     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
-    //         glfwSetWindowShouldClose(window, true);
-    //     }
-    // }
+        if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
+            glfwSetWindowShouldClose(window, true);
+        }
+    }
  
-    // glfwTerminate();
-
-    qmath::Matrix mat;
-    std::cout << mat;
-
+    glfwTerminate();
     return 0;
 }
  
