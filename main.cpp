@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 
 #include "render/renderer.h"
+#include "render/window.h"
 #include "qcore/qcore.h"
 #include "math/qmath.h"
 
@@ -10,22 +11,21 @@
 
 int main()
 {
-    Renderer* renderer = Renderer::GetInstance();
-    renderer->InitWindow(1000, 600, "qqlib");
-    renderer->Init();
-    
-    GLFWwindow* window = renderer->GetWindow();
+    Window window(1200, 800, "qqlib");
 
-    float r = 20.0f;
+    Renderer* renderer = Renderer::GetInstance();
+    renderer->Init(&window);
+    
+    float r = 80.0f;
     qmath::Vector2 pos{r, r};
     qmath::Vector2 vel{200.0f, 100.0f};
 
     double current = glfwGetTime();
     double prev = 0;
-    while (!renderer->WindowShouldClose())
+    while (!(window.WindowShouldClose()))
     {
-        int width, height;
-        glfwGetWindowSize(window, &width, &height);
+        int width = window.GetWidth(); 
+        int height = window.GetHeight();
 
         prev = current;
         current = glfwGetTime();
@@ -42,13 +42,9 @@ int main()
         renderer->DrawCircle(pos.x, pos.y, r);
 
         renderer->EndDrawing();
-
-        if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
-            glfwSetWindowShouldClose(window, true);
-        }
     }
  
-    glfwTerminate();
+    window.Close();
     return 0;
 }
  

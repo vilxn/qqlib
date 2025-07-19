@@ -7,30 +7,9 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-void Renderer::InitWindow(int width, int height, const char* title){
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+void Renderer::Init(Window* window){
+    _window = window;
 
-    window = glfwCreateWindow(width, height, title, NULL, NULL);
-    if (window == NULL)
-    {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return;
-    }
-    glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
- 
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-        return;
-    }
-}
-
-void Renderer::Init(){
     _shader = new Shader("shaders/vertexshader.glsl", "shaders/fragmentshader.glsl");
 
     _rectangle = new Rectangle();
@@ -66,20 +45,10 @@ Renderer* Renderer::GetInstance(){
     return _renderer;
 }
 
-Renderer::Renderer(){}
-
-Renderer::~Renderer(){
-    delete _renderer;
-    delete _shader;
-}
-
-bool Renderer::WindowShouldClose(){
-    return glfwWindowShouldClose(window);
-}
 
 void Renderer::EndDrawing(){
-    glfwSwapBuffers(window);
-    glfwPollEvents();
+    _window->SwapBuffers();
+    _window->PollEvents();
 }
 
 void Renderer::ClearBackground(qcore::Color color){
@@ -88,8 +57,8 @@ void Renderer::ClearBackground(qcore::Color color){
 }
 
 qmath::Matrix Renderer::GetTransformMatrix(int posX, int posY, int width, int height){
-    int windowWidth, windowHeight;
-    glfwGetWindowSize(window, &windowWidth, &windowHeight);
+    int windowWidth = _window->GetWidth(); 
+    int windowHeight = _window->GetHeight();
 
     float xRatio = 2.0f / (float)windowWidth;
     float yRatio = 2.0f / (float)windowHeight;
@@ -108,6 +77,10 @@ qmath::Matrix Renderer::GetTransformMatrix(int posX, int posY, int width, int he
     return mat;
 }
 
-GLFWwindow* Renderer::GetWindow() const{
-    return window;
+Renderer::~Renderer(){
+    delete _renderer;
+    delete _shader;
+    delete _rectangle;
 }
+
+Renderer::Renderer(){}

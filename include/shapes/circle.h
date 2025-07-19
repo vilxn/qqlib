@@ -6,7 +6,7 @@
 class Circle : Shape{
 private:
     unsigned int _segments = 128;
-
+    
     bool _wasInitialized = false;
 
     void SendVertices(unsigned int VBO, unsigned int EBO);

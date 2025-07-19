@@ -7,21 +7,20 @@
 #include "qcore/qcore.h"
 #include "math/qmath.h"
 #include "GLFW/glfw3.h"
+#include "render/window.h"
 
 
 class Renderer{
 protected:
     static Renderer* _renderer;
 
-    GLFWwindow* window;
+    Window* _window;
 
     Shader* _shader;
 
     Circle* _circle;
 
     Rectangle* _rectangle;
-
-    unsigned rec_VAO;
 
     qmath::Matrix GetTransformMatrix(int posX, int posY, int width, int height);
 
@@ -30,11 +29,7 @@ protected:
 public:
     static Renderer* GetInstance();
 
-    void InitWindow(int width, int height, const char* title);
-
-    void Init();
-
-    bool WindowShouldClose();
+    void Init(Window* window);
 
     void BeginDrawing();
 
