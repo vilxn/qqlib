@@ -16,5 +16,3 @@ namespace qcore{
         Color(unsigned v0, unsigned v1, unsigned v2, unsigned v3);
     };
 }
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
