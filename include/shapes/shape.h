@@ -9,6 +9,8 @@ protected:
 
     unsigned int _VAO;
 
+    void SetupShader(qmath::Matrix& transformMatrix, Shader* shader);
+
 public:
     void SetColor(qcore::Color newColor);
 
