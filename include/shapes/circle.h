@@ -3,7 +3,7 @@
 #include "qcore/qcore.h"
 #include "render/shader.h"
 
-class Circle : Shape{
+class Circle : public Shape{
 private:
     unsigned int _segments = 128;
     

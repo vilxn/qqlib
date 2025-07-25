@@ -37,9 +37,9 @@ public:
 
     void ClearBackground(qcore::Color color);
 
-    void DrawRectangle(int posX, int posY, float width, float height);
+    void DrawRectangle(int posX, int posY, float width, float height, qcore::Color color);
 
-    void DrawCircle(int posX, int posY, int radius);
+    void DrawCircle(int posX, int posY, int radius, qcore::Color color);
 
     ~Renderer();
 

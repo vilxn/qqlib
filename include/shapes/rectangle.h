@@ -1,7 +1,7 @@
 #pragma once
 #include "shapes/shape.h"
 
-class Rectangle : Shape{
+class Rectangle : public Shape{
 public:
     void Init() override;
 

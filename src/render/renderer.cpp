@@ -19,13 +19,15 @@ void Renderer::Init(Window* window){
     _circle->Init();
 }
 
-void Renderer::DrawRectangle(int posX, int posY, float width, float height){
+void Renderer::DrawRectangle(int posX, int posY, float width, float height, qcore::Color color){
+    _rectangle->SetColor(color);
     qmath::Matrix transformMat = GetTransformMatrix(posX, posY, width, height);
 
     _rectangle->Draw(transformMat, _shader);
 }
 
-void Renderer::DrawCircle(int posX, int posY, int radius){
+void Renderer::DrawCircle(int posX, int posY, int radius, qcore::Color color){
+    _circle->SetColor(color);
     qmath::Matrix transformMat = GetTransformMatrix(posX, posY, radius * 2, radius * 2);
 
     _circle->Draw(transformMat, _shader);
