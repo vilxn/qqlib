@@ -7,6 +7,6 @@ void Shape::SetColor(qcore::Color newColor){
 
 void Shape::SetupShader(qmath::Matrix& transformMatrix, Shader* shader){
     shader->Use();
-    shader->SetUniformMatrix4f("transformMat", transformMatrix.GetPointer());
+    shader->SetUniformMatrix4f("model", transformMatrix.GetPointer());
     shader->SetUniform4f("ourColor", _color.r / 256.0f, _color.g / 256.0f, _color.b / 256.0f, _color.a / 256.0f);
 }

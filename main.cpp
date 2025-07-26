@@ -20,7 +20,7 @@ int main()
     {
         renderer->BeginDrawing();
         renderer->ClearBackground(Q_WHITE);
-        renderer->DrawRectangle(100, 100, 100, 100, Q_RED);
+        renderer->DrawRectangle(200, 200, 100, 100, Q_RED);
         renderer->EndDrawing();
     }
  

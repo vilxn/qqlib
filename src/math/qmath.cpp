@@ -1,5 +1,6 @@
 #include "math/qmath.h"
 #include <iostream>
+#include <cmath>
 
 namespace qmath{
     Vector2& Vector2::operator += (const Vector2& v){
@@ -131,6 +132,85 @@ namespace qmath{
         mat[1][1] = y;
         mat[2][2] = z;
         mat[3][3] = 1.0f;
+
+        *this = mat.Multiply(*this);
+    }
+
+    void Matrix::Rotate(int angle, float x, float y, float z){
+        Matrix mat(0.0f);
+
+        float angleRad = (float)angle * M_PI / 180.0f;
+        float c = cosf(angleRad);
+        float s = sinf(angleRad);
+
+        mat[0][0] = (1 - c) * x * x + c;
+        mat[0][1] = (1 - c) * x * y - (s * z);
+        mat[0][2] = (1 - c) * x * z + (s * y);
+
+        mat[1][0] = (1 - c) * x * y + (s * z);
+        mat[1][1] = (1 - c) * y * y + c;
+        mat[1][2] = (1 - c) * y * z - (s * x);
+
+        mat[2][0] = (1 - c) * x * z - (s * y);
+        mat[2][1] = (1 - c) * y * z + (s * x);
+        mat[2][2] = (1 - c) * z * z + c;
+
+        mat[3][3] = 1;
+
+        *this = mat.Multiply(*this);
+    }
+
+    void Matrix::RotateX(int angle){
+        Matrix mat(0.0f);
+
+        float angleRad = (float)angle * M_PI / 180.0f;
+        float c = cosf(angleRad);
+        float s = sinf(angleRad);
+
+        mat[0][0] = 1;
+        mat[3][3] = 1;
+
+        mat[1][1] = c;
+        mat[2][2] = c;
+
+        mat[1][2] = -s;
+        mat[2][1] = s;
+
+        *this = mat.Multiply(*this);
+    }
+
+    void Matrix::RotateY(int angle){
+        Matrix mat(0.0f);
+
+        float angleRad = (float)angle * M_PI / 180.0f;
+        float c = cosf(angleRad);
+        float s = sinf(angleRad);
+
+        mat[0][0] = c;
+        mat[1][1] = 1;
+        mat[2][2] = c;
+        mat[3][3] = 1;
+
+        mat[0][2] = s;
+        mat[2][0] = -s;
+
+        *this = mat.Multiply(*this);
+    }
+
+    void Matrix::RotateZ(int angle){
+        Matrix mat(0.0f);
+
+        float angleRad = (float)angle * M_PI / 180.0f;
+        float c = cosf(angleRad);
+        float s = sinf(angleRad);
+
+        mat[0][0] = c;
+        mat[1][1] = c;
+        mat[2][2] = 1;
+        mat[3][3] = 1;
+
+        mat[0][1] = -s;
+        mat[1][0] = s;
 
         *this = mat.Multiply(*this);
     }

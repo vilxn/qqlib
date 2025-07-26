@@ -50,6 +50,8 @@ void Window::PollEvents(){
 }
 
 bool Window::WindowShouldClose(){
+    if(glfwGetKey(_window, GLFW_KEY_ESCAPE) == GLFW_PRESS) return true;
+
     return glfwWindowShouldClose(_window);
 }
 

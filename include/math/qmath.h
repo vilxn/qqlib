@@ -57,6 +57,14 @@ namespace qmath{
 
         void Scale(float x, float y, float z);
 
+        void Rotate(int angle, float x, float y, float z);
+
+        void RotateX(int angle);
+
+        void RotateY(int angle);
+
+        void RotateZ(int angle);
+
         const float* GetPointer() const;
     };
 }

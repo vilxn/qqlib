@@ -6,11 +6,16 @@
 #include "qcore/qcore.h"
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
+#include <iostream>
 
 void Renderer::Init(Window* window){
     _window = window;
 
     _shader = new Shader("shaders/vertexshader.glsl", "shaders/fragmentshader.glsl");
+    qmath::Matrix projection;
+    qmath::Matrix view;
+    _shader->SetUniformMatrix4f("view", view.GetPointer());
+    _shader->SetUniformMatrix4f("projection", projection.GetPointer());
 
     _rectangle = new Rectangle();
     _rectangle->Init();    
@@ -72,6 +77,7 @@ qmath::Matrix Renderer::GetTransformMatrix(int posX, int posY, int width, int he
     float yOffset = posY * yRatio;
 
     qmath::Matrix mat;
+    mat.RotateZ((int)(glfwGetTime() * 25));
     mat.Scale(shapeWidth, shapeHeight, 1);
     mat.Translate(xOffset, -yOffset, 0.0f);
     mat.Translate(shapeWidth - 1, 1 - shapeHeight, 0.0f);
