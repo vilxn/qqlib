@@ -11,7 +11,7 @@
 
 int main()
 {
-    Window window(1200, 800, "qqlib");
+    Window window(800, 600, "qqlib");
 
     Renderer* renderer = Renderer::GetInstance();
     renderer->Init(&window);

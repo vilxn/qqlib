@@ -19,5 +19,7 @@ public:
 
     bool WindowShouldClose();
 
+    bool IsKeyPressed(int key);
+
     void Close();
 };

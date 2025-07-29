@@ -233,6 +233,21 @@ namespace qmath{
 
         return res;
     }
+
+    void Matrix::Perspective(float fov, float aspectRatio, float zNear, float zFar){
+        float tan = tanf(fov / 2 * M_PI / 180);
+
+        for(float& i : array){
+            i = 0;
+        }
+
+        array[0 * 4 + 0] = 1 / (aspectRatio * tan);
+        array[1 * 4 + 1] = 1 / tan;
+        array[2 * 4 + 2] = -((zFar + zNear) / (zFar - zNear));
+
+        array[2 * 4 + 3] = -((zFar * zNear * 2) / (zFar - zNear));
+        array[3 * 4 + 2] = -1;
+    }
 }
 
 std::ostream& operator << (std::ostream &os, const qmath::Matrix &mat){

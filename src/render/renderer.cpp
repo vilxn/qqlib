@@ -12,8 +12,16 @@ void Renderer::Init(Window* window){
     _window = window;
 
     _shader = new Shader("shaders/vertexshader.glsl", "shaders/fragmentshader.glsl");
-    qmath::Matrix projection;
+    _shader->Use();
+
     qmath::Matrix view;
+    qmath::Matrix projection;
+
+    view.Translate(0.0f, 0.0f, -3.0f);
+    projection.Perspective(45.0f, 800.0f / 600.0f, 0.1f, 100.0f);
+
+    std::cout << projection;
+
     _shader->SetUniformMatrix4f("view", view.GetPointer());
     _shader->SetUniformMatrix4f("projection", projection.GetPointer());
 
@@ -76,10 +84,14 @@ qmath::Matrix Renderer::GetTransformMatrix(int posX, int posY, int width, int he
     float xOffset = posX * xRatio;
     float yOffset = posY * yRatio;
 
+    static float zOffset = 1.0f;
+
+    if(_window->IsKeyPressed(GLFW_KEY_R)) zOffset += 0.01f;
+    if(_window->IsKeyPressed(GLFW_KEY_F)) zOffset -= 0.01f;
+
     qmath::Matrix mat;
-    mat.RotateZ((int)(glfwGetTime() * 25));
     mat.Scale(shapeWidth, shapeHeight, 1);
-    mat.Translate(xOffset, -yOffset, 0.0f);
+    mat.Translate(xOffset, -yOffset, zOffset);
     mat.Translate(shapeWidth - 1, 1 - shapeHeight, 0.0f);
 
     return mat;

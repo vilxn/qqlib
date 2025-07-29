@@ -65,6 +65,8 @@ namespace qmath{
 
         void RotateZ(int angle);
 
+        void Perspective(float fov, float aspectRatio, float zNear, float zFar);
+
         const float* GetPointer() const;
     };
 }

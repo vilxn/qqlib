@@ -55,6 +55,10 @@ bool Window::WindowShouldClose(){
     return glfwWindowShouldClose(_window);
 }
 
+bool Window::IsKeyPressed(int key){
+    return (glfwGetKey(_window, key) == GLFW_PRESS);
+}
+
 void Window::Close(){
     glfwTerminate();
 }
