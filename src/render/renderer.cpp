@@ -1,7 +1,5 @@
 #include "render/renderer.h"
 #include "render/shader.h"
-#include "shapes/circle.h"
-#include "shapes/rectangle.h"
 #include "math/qmath.h"
 #include "qcore/qcore.h"
 #include "glad/glad.h"
@@ -13,18 +11,6 @@ void Renderer::Init(Window* window){
     _window = window;
 
     _shader = new Shader("shaders/vertexshader.glsl", "shaders/fragmentshader.glsl");
-    _shader->Use();
-
-    qmath::Matrix view;
-    qmath::Matrix projection;
-
-    // view.Translate(0.0f, 0.0f, -3.0f);
-    // projection.Perspective(45.0f, 800.0f / 600.0f, 0.1f, 100.0f);
-
-    // std::cout << projection;
-
-    _shader->SetUniformMatrix4f("view", view.GetPointer());
-    _shader->SetUniformMatrix4f("projection", projection.GetPointer());
 
     glGenBuffers(1, &_VBO);
     glGenBuffers(1, &_EBO);
@@ -38,13 +24,26 @@ void Renderer::Init(Window* window){
 void Renderer::BeginDrawing(){
     _windowWidth = _window->GetWidth();
     _windowHeight = _window->GetHeight();
+
+    qmath::Matrix view;
+    qmath::Matrix projection;
+
+    view.Translate(0.0f, 0.0f, -3.0f);
+
+    projection.Perspective(fov, (float)_windowWidth / _windowHeight, 0.1f, 100.0f);
+    if(_window->IsKeyPressed(GLFW_KEY_R)) fov += 0.01f;
+    if(_window->IsKeyPressed(GLFW_KEY_F)) fov -= 0.01f;
+
+    _shader->Use();
+    _shader->SetUniformMatrix4f("view", view.GetPointer());
+    _shader->SetUniformMatrix4f("projection", projection.GetPointer());
 }
 
 void Renderer::DrawRectangle(int posX, int posY, float width, float height, qcore::Color color){
     unsigned int vertixNum = _vertices.size() / 3;
 
     float horRatio = 2.0f / (float)_windowWidth;
-    float verRatio = 2.0f / (float)_windowHeight;
+    float verRatio = horRatio;
 
     float x = posX * horRatio - 1.0f;
     float y = 1.0f - posY * verRatio;
@@ -68,7 +67,7 @@ void Renderer::DrawCircle(int posX, int posY, int radius, qcore::Color color){
     unsigned int vertixNum = _vertices.size() / 3;
 
     float horRatio = 2.0f / (float)_windowWidth;
-    float verRatio = 2.0f / (float)_windowHeight;
+    float verRatio = horRatio;
 
     float positionX = posX * horRatio - 1.0f;
     float positionY = 1.0f - posY * verRatio;

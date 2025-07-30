@@ -1,8 +1,6 @@
 #pragma once
 #include "glad/glad.h"
 #include "render/shader.h"
-#include "shapes/circle.h"
-#include "shapes/rectangle.h"
 #include "glad/glad.h"
 #include "qcore/qcore.h"
 #include "math/qmath.h"
@@ -10,6 +8,7 @@
 #include "render/window.h"
 #include <vector>
 
+enum class RenderMode{ Perspective, CameraNone};
 
 class Renderer{
 protected:
@@ -21,6 +20,8 @@ protected:
 
     int _windowWidth;
     int _windowHeight;
+
+    float fov = 45.0f;
 
     unsigned int _VAO;
     unsigned int _VBO;
