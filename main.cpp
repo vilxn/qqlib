@@ -21,6 +21,8 @@ int main()
         renderer->BeginDrawing();
         renderer->ClearBackground(Q_WHITE);
         renderer->DrawRectangle(200, 200, 100, 100, Q_RED);
+        renderer->DrawRectangle(0, 0, 200, 200, Q_BLACK);
+        renderer->DrawCircle(400, 300, 100, Q_BLACK);
         renderer->EndDrawing();
     }
  

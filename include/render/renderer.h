@@ -8,6 +8,7 @@
 #include "math/qmath.h"
 #include "GLFW/glfw3.h"
 #include "render/window.h"
+#include <vector>
 
 
 class Renderer{
@@ -18,9 +19,15 @@ protected:
 
     Shader* _shader;
 
-    Circle* _circle;
+    int _windowWidth;
+    int _windowHeight;
 
-    Rectangle* _rectangle;
+    unsigned int _VAO;
+    unsigned int _VBO;
+    unsigned int _EBO;
+
+    std::vector<float> _vertices;
+    std::vector<unsigned int> _indices;
 
     qmath::Matrix GetTransformMatrix(int posX, int posY, int width, int height);
 
