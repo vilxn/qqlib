@@ -2,6 +2,7 @@
 #include <iostream>
 #include <ostream>
 #include <string>
+#include <cmath>
 
 namespace qmath{
     struct Vector4{
@@ -69,17 +70,33 @@ namespace qmath{
 
         const float* GetPointer() const;
     };
+
+    Vector3 Normalize(const Vector3& v);
+
+    Vector3 Cross(const Vector3& v0, const Vector3& v1);
+
+    //Vector2 operators
+    Vector2 operator + (const Vector2& v0, const Vector2& v1);
+
+    Vector2 operator - (const Vector2& v0, const Vector2& v1);
+
+    Vector2 operator * (const Vector2& v0, const float f1);
+
+    Vector2 operator / (const Vector2& v0, const float f1);
+
+    //Vector3 operators
+    Vector3 operator + (const Vector3& v0, const Vector3& v1);
+
+    Vector3 operator - (const Vector3& v0, const Vector3& v1);
+
+    Vector3 operator * (const Vector3& v0, const float f1);
+
+    Vector3 operator / (const Vector3& v0, const float f1);
 }
 
 std::ostream& operator << (std::ostream &os, const qmath::Matrix& mat);
 
-qmath::Vector2 operator + (const qmath::Vector2& v0, const qmath::Vector2& v1);
 
-qmath::Vector2 operator - (const qmath::Vector2& v0, const qmath::Vector2& v1);
-
-qmath::Vector2 operator * (const qmath::Vector2& v0, const float f1);
-
-qmath::Vector2 operator / (const qmath::Vector2& v0, const float f1);
 
 
 

@@ -241,34 +241,22 @@ namespace qmath{
             i = 0;
         }
 
-        array[0 * 4 + 0] = 1 / (aspectRatio * tan);
+        array[0 * 4 + 0] = 1 / (tan * aspectRatio);
         array[1 * 4 + 1] = 1 / tan;
         array[2 * 4 + 2] = -((zFar + zNear) / (zFar - zNear));
 
         array[2 * 4 + 3] = -((zFar * zNear * 2) / (zFar - zNear));
         array[3 * 4 + 2] = -1;
     }
+
+    
 }
 
 std::ostream& operator << (std::ostream &os, const qmath::Matrix &mat){
     return os << mat.ToString();
 }
 
-qmath::Vector2 operator + (const qmath::Vector2& v0, const qmath::Vector2& v1){
-    return (qmath::Vector2){v0.x + v1.x, v0.y + v1.y};
-}
 
-qmath::Vector2 operator - (const qmath::Vector2& v0, const qmath::Vector2& v1){
-    return (qmath::Vector2){v0.x - v1.x, v0.y - v1.y};
-}
-
-qmath::Vector2 operator * (const qmath::Vector2& v0, const float f1){
-    return (qmath::Vector2){v0.x * f1, v0.y * f1};
-}
-
-qmath::Vector2 operator / (const qmath::Vector2& v0, const float f1){
-    return (qmath::Vector2){v0.x / f1, v0.y / f1};
-}
 
 
 

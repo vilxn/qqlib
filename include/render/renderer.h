@@ -22,6 +22,8 @@ protected:
     int _windowHeight;
 
     float fov = 45.0f;
+    float cameraPosX = 0.0f;
+    float cameraPosY = 0.0f;
 
     unsigned int _VAO;
     unsigned int _VBO;
