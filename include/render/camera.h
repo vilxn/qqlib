@@ -4,7 +4,12 @@
 
 class Camera {
 private:
-    qmath::Vector2 position;
+    qmath::Vector3 _position;
+    qmath::Vector3 _target;
+
+    qmath::Vector3 _up;
+    qmath::Vector3 _right;
+    qmath::Vector3 _forward;
 
     float _fov;
     float _aspect;
@@ -12,8 +17,9 @@ private:
     float _far;
 
 public:
-    Camera(const float& fov, const float& aspect, const float& near, const float& far) :
-    _fov(fov), _aspect(aspect), _near(near), _far(far) {};
+    Camera();
 
+    Camera(qmath::Vector3 position, qmath::Vector3 target);
 
+    qmath::Matrix getViewMatrix() const;
 };

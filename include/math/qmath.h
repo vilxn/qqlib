@@ -13,13 +13,21 @@ namespace qmath{
         
         float& operator[](int index);
         
-        void Print();
+        void Print() const;
     };
 
     struct Vector3{
         float x;
         float y;
         float z;
+
+        Vector3& operator += (const Vector3& v);
+
+        Vector3& operator -= (const Vector3& v);
+
+        Vector3& operator *= (const float& f);
+
+        Vector3& operator /= (const float& f);
     };
 
     struct Vector2{
@@ -30,9 +38,9 @@ namespace qmath{
 
         Vector2& operator -= (const qmath::Vector2& v);
 
-        Vector2& operator *= (const float f);
+        Vector2& operator *= (const float& f);
 
-        Vector2& operator /= (const float f);
+        Vector2& operator /= (const float& f);
     };
 
     class Matrix{
@@ -44,27 +52,27 @@ namespace qmath{
 
         Matrix(float value);
         
-        void Print();
+        void Print() const;
         
         float* operator[](int index);
 
         std::string ToString() const;
         
-        Vector4 Multiply(Vector4& vec);
+        Vector4 Multiply(Vector4& vec) const;
 
-        Matrix Multiply(const Matrix& mat);
+        Matrix Multiply(const Matrix& mat) const;
 
         void Translate(float x, float y, float z);
 
         void Scale(float x, float y, float z);
 
-        void Rotate(int angle, float x, float y, float z);
+        void Rotate(const int &angle, const float &x, const float &y, const float &z);
 
-        void RotateX(int angle);
+        void RotateX(const int &angle);
 
-        void RotateY(int angle);
+        void RotateY(const int &angle);
 
-        void RotateZ(int angle);
+        void RotateZ(const int &angle);
 
         void Perspective(float fov, float aspectRatio, float zNear, float zFar);
 
@@ -92,9 +100,14 @@ namespace qmath{
     Vector3 operator * (const Vector3& v0, const float f1);
 
     Vector3 operator / (const Vector3& v0, const float f1);
+
+    std::ostream& operator << (std::ostream& os, const qmath::Vector3& v);
+
+    //Matrix operator
+    std::ostream& operator << (std::ostream &os, const qmath::Matrix& mat);
 }
 
-std::ostream& operator << (std::ostream &os, const qmath::Matrix& mat);
+
 
 
 

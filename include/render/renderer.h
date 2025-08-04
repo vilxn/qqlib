@@ -8,6 +8,8 @@
 #include "render/window.h"
 #include <vector>
 
+#include "camera.h"
+
 enum class RenderMode{ Perspective, CameraNone};
 
 class Renderer{
@@ -17,6 +19,8 @@ protected:
     Window* _window;
 
     Shader* _shader;
+
+    Camera _camera;
 
     int _windowWidth;
     int _windowHeight;

@@ -35,29 +35,17 @@ void Renderer::BeginDrawing(){
     if(_window->IsKeyPressed(GLFW_KEY_A)) cameraPosX -= 0.01f;
     if(_window->IsKeyPressed(GLFW_KEY_D)) cameraPosX += 0.01f;
 
-    qmath::Vector3 cameraPos{.x = cameraPosX, .y = cameraPosY, .z = 3.0f};
+    const float radius = 10.0f;
+    float camX = sin(glfwGetTime()) * radius;
+    float camZ = cos(glfwGetTime()) * radius;
+
+
+    qmath::Vector3 cameraPos{.x = camX, .y = cameraPosY, .z = camZ};
     qmath::Vector3 cameraTarget{0};
-    qmath::Vector3 cameraDirection = qmath::Normalize(cameraPos - cameraTarget);
 
-    qmath::Vector3 up{.x = 0.0f, .y = 1.0f, .z = 0.0f};
-    qmath::Vector3 cameraRight = qmath::Normalize(qmath::Cross(up, cameraDirection));
-    qmath::Vector3 cameraUp = qmath::Cross(cameraDirection, cameraRight);
+    _camera = Camera(cameraPos, cameraTarget);
 
-    qmath::Matrix lookAt(0.0f);
-    qmath::Matrix cameraPosMat;
-
-    lookAt[0][0] = cameraRight.x;     lookAt[0][1] = cameraRight.y;     lookAt[0][2] = cameraRight.z;
-    lookAt[1][0] = cameraUp.x;        lookAt[1][1] = cameraUp.y;        lookAt[1][2] = cameraUp.z;
-    lookAt[2][0] = cameraDirection.x; lookAt[2][1] = cameraDirection.y; lookAt[2][2] = cameraDirection.z;
-    lookAt[3][3] = 1.0f;
-
-    cameraPosMat[0][3] = -cameraPos.x;
-    cameraPosMat[1][3] = -cameraPos.y;
-    cameraPosMat[2][3] = -cameraPos.z;
-
-    lookAt = lookAt.Multiply(cameraPosMat);
-
-    qmath::Matrix view(lookAt);
+    qmath::Matrix view(_camera.getViewMatrix());
     qmath::Matrix projection;
 
     projection.Perspective(fov, static_cast<float>(_windowWidth) / static_cast<float>(_windowHeight), 0.1f, 100.0f);
@@ -167,6 +155,19 @@ void Renderer::EndDrawing(){
         -0.5f,  0.5f, -0.5f, 
     };
 
+    const qmath::Vector3 cubePositions[] = {
+        qmath::Vector3{0.0f,  0.0f,  0.0f},
+        qmath::Vector3{ 2.0f,  5.0f, -15.0f},
+        qmath::Vector3{-1.5f, -2.2f, -2.5f},
+        qmath::Vector3{-3.8f, -2.0f, -12.3f},
+        qmath::Vector3{ 2.4f, -0.4f, -3.5f},
+        qmath::Vector3{-1.7f,  3.0f, -7.5f},
+        qmath::Vector3{ 1.3f, -2.0f, -2.5f},
+        qmath::Vector3{ 1.5f,  2.0f, -2.5f},
+        qmath::Vector3{ 1.5f,  0.2f, -1.5f},
+        qmath::Vector3{-1.3f,  1.0f, -1.5f}
+    };
+
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * _vertices.size(), _vertices.data(), GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * _indices.size(), _indices.data(), GL_STATIC_DRAW);
 
@@ -176,16 +177,25 @@ void Renderer::EndDrawing(){
     glEnableVertexAttribArray(0);
 
     _shader->Use();
-    qmath::Matrix mat;
-    mat.RotateY((int)(glfwGetTime() * 25.0f));
-    mat.RotateX((int)(glfwGetTime() * 25.0f));
-    _shader->SetUniformMatrix4f("model", mat.GetPointer());
     _shader->SetUniform4f("ourColor", 0.0f, 0.0f, 0.0f, 1.0f);
-
     glBindVertexArray(_VBO);
+
+    for (int i = 0; i < std::size(cubePositions); i++) {
+        qmath::Matrix model;
+
+        model.Translate(cubePositions[i].x, cubePositions[i].y, cubePositions[i].z);
+        float angle = 20.0f * i;
+
+        model.RotateX(angle);
+        model.RotateY(angle * 0.3f);
+        model.RotateZ(angle * 0.5f);
+
+        _shader->SetUniformMatrix4f("model", model.GetPointer());
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
     // glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, 0);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     _window->SwapBuffers();
     _window->PollEvents();

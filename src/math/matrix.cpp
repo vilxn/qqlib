@@ -1,53 +1,10 @@
 #include "math/qmath.h"
 #include <iostream>
 #include <cmath>
+#include <complex>
 
 namespace qmath{
-    Vector2& Vector2::operator += (const Vector2& v){
-        x += v.x;
-        y += v.y;
-
-        return *this;
-    }
-
-    Vector2& Vector2::operator -= (const Vector2& v){
-        x -= v.x;
-        y -= v.y;
-
-        return *this;
-    }
-
-    Vector2& Vector2::operator *= (const float f){
-        x *= f;
-        y *= f;
-
-        return *this;
-    }
-
-    Vector2& Vector2::operator /= (const float f){
-        x /= f;
-        y /= f;
-
-        return *this;
-    }
-
-    float& Vector4::operator[](int index){
-        if(index >= 4 || index < 0){
-            std::cout << "out of bound";
-            exit(0);
-        }
-        
-        switch(index){
-            case 0: return x; break;
-            case 1: return y; break;
-            case 2: return z; break;
-            case 3: return w; break;
-        }
-        
-        return x;
-    }
-
-    void Vector4::Print(){
+    void Vector4::Print() const {
         std::cout << "Vector4(" << x << ", " << y << ", " << z << ", " << w << ")\n";
     }
 
@@ -63,24 +20,16 @@ namespace qmath{
         }
     }
 
-    void Matrix::Print(){
+    void Matrix::Print() const {
         for(int i = 0; i < 16; i++){
             std::cout << array[i] << " ";
             if((i + 1) % 4 == 0) std::cout << "\n";
         }
     }
 
-    float* Matrix::operator[](int index){
-        if(index >= 4){
-            std::cout << "out of bound";
-            exit(0);
-        }
-        
-        index *= 4;
-        return (array + index);
-    }
 
-    Vector4 Matrix::Multiply(Vector4& vec){
+
+    Vector4 Matrix::Multiply(Vector4& vec) const {
         Vector4 res;
         
         for(int i = 0; i < 4; i++){
@@ -96,7 +45,7 @@ namespace qmath{
         return res;
     }
 
-    Matrix Matrix::Multiply(const Matrix& mat){
+    Matrix Matrix::Multiply(const Matrix& mat) const {
         const float* array1 = mat.GetPointer();
         Matrix res(0.0f);
 
@@ -136,12 +85,12 @@ namespace qmath{
         *this = mat.Multiply(*this);
     }
 
-    void Matrix::Rotate(int angle, float x, float y, float z){
+    void Matrix::Rotate(const int& angle, const float& x, const float& y, const float& z){
         Matrix mat(0.0f);
 
-        float angleRad = (float)angle * M_PI / 180.0f;
-        float c = cosf(angleRad);
-        float s = sinf(angleRad);
+        const float angleRad = static_cast<float>(angle * M_PI / 180.0f);
+        const float c = cosf(angleRad);
+        const float s = sinf(angleRad);
 
         mat[0][0] = (1 - c) * x * x + c;
         mat[0][1] = (1 - c) * x * y - (s * z);
@@ -160,12 +109,12 @@ namespace qmath{
         *this = mat.Multiply(*this);
     }
 
-    void Matrix::RotateX(int angle){
+    void Matrix::RotateX(const int& angle){
         Matrix mat(0.0f);
 
-        float angleRad = (float)angle * M_PI / 180.0f;
-        float c = cosf(angleRad);
-        float s = sinf(angleRad);
+        const float angleRad = static_cast<float>(angle * M_PI / 180.0f);
+        const float c = cosf(angleRad);
+        const float s = sinf(angleRad);
 
         mat[0][0] = 1;
         mat[3][3] = 1;
@@ -179,12 +128,12 @@ namespace qmath{
         *this = mat.Multiply(*this);
     }
 
-    void Matrix::RotateY(int angle){
+    void Matrix::RotateY(const int& angle){
         Matrix mat(0.0f);
 
-        float angleRad = (float)angle * M_PI / 180.0f;
-        float c = cosf(angleRad);
-        float s = sinf(angleRad);
+        const float angleRad = static_cast<float>(angle * M_PI / 180.0f);
+        const float c = cosf(angleRad);
+        const float s = sinf(angleRad);
 
         mat[0][0] = c;
         mat[1][1] = 1;
@@ -197,12 +146,12 @@ namespace qmath{
         *this = mat.Multiply(*this);
     }
 
-    void Matrix::RotateZ(int angle){
+    void Matrix::RotateZ(const int& angle){
         Matrix mat(0.0f);
 
-        float angleRad = (float)angle * M_PI / 180.0f;
-        float c = cosf(angleRad);
-        float s = sinf(angleRad);
+        const float angleRad = static_cast<float>(angle * M_PI / 180.0f);
+        const float c = cosf(angleRad);
+        const float s = sinf(angleRad);
 
         mat[0][0] = c;
         mat[1][1] = c;
@@ -220,7 +169,7 @@ namespace qmath{
     }
 
     std::string Matrix::ToString() const{
-        std::string res = "";
+        std::string res;
 
         for(int i = 0; i < 4; i++){
             res += "[ "; 
@@ -235,7 +184,7 @@ namespace qmath{
     }
 
     void Matrix::Perspective(float fov, float aspectRatio, float zNear, float zFar){
-        float tan = tanf(fov / 2 * M_PI / 180);
+        const float tan = static_cast<float>(std::tan(fov / 2 * M_PI / 180));
 
         for(float& i : array){
             i = 0;
@@ -252,9 +201,6 @@ namespace qmath{
     
 }
 
-std::ostream& operator << (std::ostream &os, const qmath::Matrix &mat){
-    return os << mat.ToString();
-}
 
 
 
