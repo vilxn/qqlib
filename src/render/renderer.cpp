@@ -60,7 +60,7 @@ void Renderer::BeginDrawing(){
     qmath::Matrix view(lookAt);
     qmath::Matrix projection;
 
-    projection.Perspective(fov, (float)_windowWidth / _windowHeight, 0.1f, 100.0f);
+    projection.Perspective(fov, static_cast<float>(_windowWidth) / static_cast<float>(_windowHeight), 0.1f, 100.0f);
     if(_window->IsKeyPressed(GLFW_KEY_R)) fov += 0.01f;
     if(_window->IsKeyPressed(GLFW_KEY_F)) fov -= 0.01f;
 
@@ -111,8 +111,8 @@ void Renderer::DrawCircle(int posX, int posY, int radius, qcore::Color color){
 
     long double angleOffset = M_PI * 2 / segments;
     for(unsigned int i = 1; i <= segments; i++){
-        float x = std::cosl(angleOffset * i) * radius * horRatio;
-        float y = std::sinl(angleOffset * i) * radius * verRatio;
+        float x = cosh(angleOffset * i) * radius * horRatio;
+        float y = sinh(angleOffset * i) * radius * verRatio;
 
         _vertices.insert(_vertices.end(), {positionX + x, positionY - y, 1.0f});
         
@@ -123,7 +123,7 @@ void Renderer::DrawCircle(int posX, int posY, int radius, qcore::Color color){
 }
 
 void Renderer::EndDrawing(){
-    float vertices[] = {
+    const float vertices[] = {
         -0.5f, -0.5f, -0.5f,
         0.5f, -0.5f, -0.5f,
         0.5f,  0.5f, -0.5f,
@@ -177,15 +177,15 @@ void Renderer::EndDrawing(){
 
     _shader->Use();
     qmath::Matrix mat;
-    // mat.RotateY((int)(glfwGetTime() * 25.0f));
-    // mat.RotateX((int)(glfwGetTime() * 25.0f));
+    mat.RotateY((int)(glfwGetTime() * 25.0f));
+    mat.RotateX((int)(glfwGetTime() * 25.0f));
     _shader->SetUniformMatrix4f("model", mat.GetPointer());
     _shader->SetUniform4f("ourColor", 0.0f, 0.0f, 0.0f, 1.0f);
 
     glBindVertexArray(_VBO);
     // glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, 0);
     glDrawArrays(GL_TRIANGLES, 0, 36);
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     _window->SwapBuffers();
     _window->PollEvents();

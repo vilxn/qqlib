@@ -19,7 +19,7 @@ int main()
     while (!(window.WindowShouldClose()))
     {
         renderer->BeginDrawing();
-        renderer->ClearBackground(Q_WHITE);
+        Renderer::ClearBackground(Q_WHITE);
         renderer->EndDrawing();
     }
  

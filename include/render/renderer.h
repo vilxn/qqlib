@@ -25,8 +25,8 @@ protected:
     float cameraPosX = 0.0f;
     float cameraPosY = 0.0f;
 
-    unsigned int _VAO;
-    unsigned int _VBO;
+    unsigned int _VAO = 0;
+    unsigned int _VBO = 0;
     unsigned int _EBO;
 
     std::vector<float> _vertices;
@@ -45,7 +45,7 @@ public:
 
     void EndDrawing();
 
-    void ClearBackground(qcore::Color color);
+    static void ClearBackground(qcore::Color color);
 
     void DrawRectangle(int posX, int posY, float width, float height, qcore::Color color);
 
