@@ -21,6 +21,12 @@ void Renderer::Init(Window* window){
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBO);
 
     glEnable(GL_DEPTH_TEST);
+
+    qmath::Vector3 cameraPos{.x = 0.0f, .y = 0.0f, .z = 10.0f};
+    qmath::Vector3 cameraTarget{0};
+
+    _camera = Camera(cameraPos, cameraTarget);
+    _camera.setPerspective(45.0f, static_cast<float>(_windowWidth) / static_cast<float>(_windowHeight), 0.1f, 100.0f);
 }
 
 void Renderer::BeginDrawing(){
@@ -29,28 +35,14 @@ void Renderer::BeginDrawing(){
     _windowWidth = _window->GetWidth();
     _windowHeight = _window->GetHeight();
 
-    if(_window->IsKeyPressed(GLFW_KEY_W)) cameraPosY += 0.01f;
-    if(_window->IsKeyPressed(GLFW_KEY_S)) cameraPosY -= 0.01f;
+    if(_window->IsKeyPressed(GLFW_KEY_W)) _camera.moveX(0.05f);
+    if(_window->IsKeyPressed(GLFW_KEY_S)) _camera.moveX(-0.05f);
 
-    if(_window->IsKeyPressed(GLFW_KEY_A)) cameraPosX -= 0.01f;
-    if(_window->IsKeyPressed(GLFW_KEY_D)) cameraPosX += 0.01f;
-
-    const float radius = 10.0f;
-    float camX = sin(glfwGetTime()) * radius;
-    float camZ = cos(glfwGetTime()) * radius;
-
-
-    qmath::Vector3 cameraPos{.x = camX, .y = cameraPosY, .z = camZ};
-    qmath::Vector3 cameraTarget{0};
-
-    _camera = Camera(cameraPos, cameraTarget);
+    if(_window->IsKeyPressed(GLFW_KEY_A)) _camera.moveY(-0.05f);
+    if(_window->IsKeyPressed(GLFW_KEY_D)) _camera.moveY(0.05f);
 
     qmath::Matrix view(_camera.getViewMatrix());
-    qmath::Matrix projection;
-
-    projection.Perspective(fov, static_cast<float>(_windowWidth) / static_cast<float>(_windowHeight), 0.1f, 100.0f);
-    if(_window->IsKeyPressed(GLFW_KEY_R)) fov += 0.01f;
-    if(_window->IsKeyPressed(GLFW_KEY_F)) fov -= 0.01f;
+    qmath::Matrix projection(_camera.getPerspectiveMatrix());
 
     _shader->Use();
     _shader->SetUniformMatrix4f("view", view.GetPointer());

@@ -11,7 +11,7 @@ Camera::Camera(qmath::Vector3 Position, qmath::Vector3 Target) {
 
     _forward = qmath::Normalize(Position - _target);
 
-    const qmath::Vector3 upWorld{0.0f, 1.0f, 0.0f};
+    constexpr qmath::Vector3 upWorld{0.0f, 1.0f, 0.0f};
     _right = qmath::Normalize(qmath::Cross(upWorld, _forward));
 
     _up = qmath::Cross(_forward, _right);
@@ -34,3 +34,27 @@ qmath::Matrix Camera::getViewMatrix() const {
 
     return lookAt;
 }
+
+void Camera::setPerspective(float fov, float aspect, float near, float far) {
+    _fov = fov;
+    _aspect = aspect;
+    _near = near;
+    _far = far;
+}
+
+qmath::Matrix Camera::getPerspectiveMatrix() const {
+    qmath::Matrix perspectiveMatrix(0.0f);
+    perspectiveMatrix.Perspective(_fov, _aspect, _near, _far);
+
+    return perspectiveMatrix;
+}
+
+void Camera::moveX(float delta) {
+    _position += _forward * delta;
+}
+
+void Camera::moveY(float delta) {
+    _position += _right * delta;
+}
+
+

@@ -25,10 +25,6 @@ protected:
     int _windowWidth;
     int _windowHeight;
 
-    float fov = 45.0f;
-    float cameraPosX = 0.0f;
-    float cameraPosY = 0.0f;
-
     unsigned int _VAO = 0;
     unsigned int _VBO = 0;
     unsigned int _EBO;
