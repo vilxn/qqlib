@@ -16,6 +16,9 @@ private:
     float _near = 0.1f;
     float _far = 100.0f;
 
+    float yaw = 90.0f;
+    float pitch = 0.0f;
+
 public:
     Camera();
 
@@ -29,5 +32,7 @@ public:
 
     void moveX(float delta);
 
-    void moveY(float delta);
+    void moveZ(float delta);
+
+    void processMouseMovement(float deltaX, float deltaY);
 };

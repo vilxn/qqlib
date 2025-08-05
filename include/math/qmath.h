@@ -105,6 +105,8 @@ namespace qmath{
 
     //Matrix operator
     std::ostream& operator << (std::ostream &os, const qmath::Matrix& mat);
+
+    float radians(float degrees);
 }
 
 

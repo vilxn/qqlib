@@ -4,6 +4,8 @@
 #include <cstdlib>
 #include <iostream>
 
+#include "render/renderer.h"
+
 Window::Window(int width, int height, const char* title){
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -17,7 +19,9 @@ Window::Window(int width, int height, const char* title){
         glfwTerminate();
         abort();
     }
+    glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwMakeContextCurrent(_window);
+
     glfwSetFramebufferSizeCallback(_window, [](GLFWwindow* window, int width, int height){
         glViewport(0, 0, width, height);
     });
@@ -39,6 +43,18 @@ int Window::GetHeight(){
     int width, height;
     glfwGetWindowSize(_window, &width, &height);
     return height;
+}
+
+double Window::getMousePosX() {
+    double x, y;
+    glfwGetCursorPos(_window, &x, &y);
+    return x;
+}
+
+double Window::getMousePosY() {
+    double x, y;
+    glfwGetCursorPos(_window, &x, &y);
+    return y;
 }
 
 void Window::SwapBuffers(){

@@ -1,4 +1,10 @@
 #include "render/camera.h"
+#include "math/qmath.h"
+#include <cmath>
+
+float radians(const float degrees) {
+    return degrees * M_PI / 180.0f;
+}
 
 Camera::Camera() {
     _position = (qmath::Vector3){0.0f, 0.0f, 3.0f};
@@ -53,8 +59,37 @@ void Camera::moveX(float delta) {
     _position += _forward * delta;
 }
 
-void Camera::moveY(float delta) {
+void Camera::moveZ(float delta) {
     _position += _right * delta;
 }
+
+void Camera::processMouseMovement(float deltaX, float deltaY) {
+    const float sensitivity = 0.1f;
+
+    yaw += deltaX * sensitivity;
+    pitch += deltaY * sensitivity;
+
+    if (pitch > 89.0f) pitch = 89.0f;
+    if (pitch < -89.0f) pitch = -89.0f;
+
+    qmath::Vector3 front;
+    front.x = cos(radians(yaw)) * cos(radians(pitch));
+    front.y = sin(radians(pitch));
+    front.z = sin(radians(yaw)) * cos(radians(pitch));
+
+    _forward = qmath::Normalize(front);
+
+    constexpr qmath::Vector3 upWorld{0.0f, 1.0f, 0.0f};
+    _right = qmath::Normalize(qmath::Cross(upWorld, _forward));
+
+    _up = qmath::Cross(_forward, _right);
+
+    std::cout << "Yaw: " << yaw << std::endl;
+    std::cout << "Pitch: " << pitch << std::endl;
+}
+
+
+
+
 
 

@@ -10,7 +10,7 @@
 
 int main()
 {
-    Window window(800, 600, "qqlib");
+    Window window(1600, 900, "qqlib");
 
     Renderer* renderer = Renderer::GetInstance();
     renderer->Init(&window);

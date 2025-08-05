@@ -13,6 +13,10 @@ public:
 
     int GetHeight();
 
+    double getMousePosX();
+
+    double getMousePosY();
+
     void SwapBuffers();
 
     void PollEvents();

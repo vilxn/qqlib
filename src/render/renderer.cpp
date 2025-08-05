@@ -9,6 +9,8 @@
 
 void Renderer::Init(Window* window){
     _window = window;
+    _windowWidth = _window->GetWidth();
+    _windowHeight = _window->GetHeight();
 
     _shader = new Shader("shaders/vertexshader.glsl", "shaders/fragmentshader.glsl");
 
@@ -22,7 +24,7 @@ void Renderer::Init(Window* window){
 
     glEnable(GL_DEPTH_TEST);
 
-    qmath::Vector3 cameraPos{.x = 0.0f, .y = 0.0f, .z = 10.0f};
+    qmath::Vector3 cameraPos{.x = 0.0f, .y = 0.0f, .z = 3.0f};
     qmath::Vector3 cameraTarget{0};
 
     _camera = Camera(cameraPos, cameraTarget);
@@ -30,16 +32,39 @@ void Renderer::Init(Window* window){
 }
 
 void Renderer::BeginDrawing(){
+    float currentFrame = glfwGetTime();
+    deltaTime = currentFrame - lastFrame;
+    lastFrame = currentFrame;
+
+    double currentMousePosX = _window->getMousePosX();
+    double currentMousePosY = _window->getMousePosY();
+
+    if (firstMouse) {
+        lastMousePosX = currentMousePosX;
+        lastMousePosY = currentMousePosY;
+        firstMouse = false;
+    }
+
+    deltaMousePosX = currentMousePosX - lastMousePosX;
+    deltaMousePosY = currentMousePosY - lastMousePosY;
+
+    lastMousePosX = currentMousePosX;
+    lastMousePosY = currentMousePosY;
+
     glClear(GL_DEPTH_BUFFER_BIT);
 
     _windowWidth = _window->GetWidth();
     _windowHeight = _window->GetHeight();
 
-    if(_window->IsKeyPressed(GLFW_KEY_W)) _camera.moveX(0.05f);
-    if(_window->IsKeyPressed(GLFW_KEY_S)) _camera.moveX(-0.05f);
+    float cameraSpeed = 8.0f;
 
-    if(_window->IsKeyPressed(GLFW_KEY_A)) _camera.moveY(-0.05f);
-    if(_window->IsKeyPressed(GLFW_KEY_D)) _camera.moveY(0.05f);
+    if(_window->IsKeyPressed(GLFW_KEY_W)) _camera.moveX(-cameraSpeed * deltaTime);
+    if(_window->IsKeyPressed(GLFW_KEY_S)) _camera.moveX(cameraSpeed * deltaTime);
+
+    if(_window->IsKeyPressed(GLFW_KEY_A)) _camera.moveZ(-cameraSpeed * deltaTime);
+    if(_window->IsKeyPressed(GLFW_KEY_D)) _camera.moveZ(cameraSpeed * deltaTime);
+
+    _camera.processMouseMovement(static_cast<float>(deltaMousePosX), (float)deltaMousePosY);
 
     qmath::Matrix view(_camera.getViewMatrix());
     qmath::Matrix projection(_camera.getPerspectiveMatrix());
@@ -187,12 +212,12 @@ void Renderer::EndDrawing(){
     }
     // glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, 0);
 
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     _window->SwapBuffers();
     _window->PollEvents();
 
-    if(glGetError() != GL_NO_ERROR) std::cout << "Has error";
+    if(glGetError() != GL_NO_ERROR) std::cout << "Has error\n";
 
     _vertices.clear();
     _indices.clear();
