@@ -32,6 +32,8 @@ protected:
     std::vector<float> _vertices;
     std::vector<unsigned int> _indices;
 
+    qmath::Vector3 lightPosition;
+
     Renderer();
 
 public:

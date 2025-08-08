@@ -102,6 +102,10 @@ void Camera::processMouseMovement(const qmath::Vector2& deltaMouse) {
     _up = qmath::Cross(_forward, _right);
 }
 
+qmath::Vector3 Camera::getPosition() {
+    return _position;
+}
+
 
 
 

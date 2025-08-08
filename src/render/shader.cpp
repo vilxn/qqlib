@@ -5,6 +5,8 @@
 #include <sstream>
 #include <iostream>
 
+#include "math/qmath.h"
+
 
 Shader::Shader(const char* vertexPath, const char* fragmentPath){
     std::string vertexCode, fragmentCode;
@@ -100,4 +102,8 @@ void Shader::SetUniform3f(const std::string& name, float v1, float v2, float v3)
 
 void Shader::SetUniform4f(const std::string& name, float v1, float v2, float v3, float v4){
     glUniform4f(glGetUniformLocation(ID, name.c_str()), v1, v2, v3, v4);
+}
+
+void Shader::SetUniform3f(const std::string& name, qmath::Vector3 value){
+    glUniform3f(glGetUniformLocation(ID, name.c_str()), value.x, value.y, value.z);
 }

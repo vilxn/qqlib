@@ -8,6 +8,8 @@
 #include <cmath>
 
 void Renderer::Init(Window* window){
+    lightPosition = qmath::Vector3(4.2f, 2.0f, 1.0f);
+
     _window = window;
     _windowWidth = _window->getWidth();
     _windowHeight = _window->getHeight();
@@ -52,6 +54,12 @@ void Renderer::BeginDrawing(){
 
     if(_window->IsKeyPressed(GLFW_KEY_A)) _camera->moveZ(-cameraSpeed * _window->getDeltaTime());
     if(_window->IsKeyPressed(GLFW_KEY_D)) _camera->moveZ(cameraSpeed * _window->getDeltaTime());
+
+    if(_window->IsKeyPressed(GLFW_KEY_UP)) lightPosition.x += 2.0f * _window->getDeltaTime();
+    if(_window->IsKeyPressed(GLFW_KEY_DOWN)) lightPosition.x -= 2.0f * _window->getDeltaTime();
+
+    if(_window->IsKeyPressed(GLFW_KEY_LEFT)) lightPosition.z -= 2.0f * _window->getDeltaTime();
+    if(_window->IsKeyPressed(GLFW_KEY_RIGHT)) lightPosition.z += 2.0f * _window->getDeltaTime();
 
     _camera->processMouseMovement(_window->getDeltaMouse());
 
@@ -178,7 +186,7 @@ void Renderer::EndDrawing(){
         qmath::Vector3{-1.3f,  1.0f, -1.5f}
     };
 
-    const qmath::Vector3 lightPosition(4.2f, 2.0f, 1.0f);
+
 
     glBindVertexArray(_VAO);
 
@@ -203,6 +211,7 @@ void Renderer::EndDrawing(){
     _shader->SetUniform4f("ourColor", 1.0f, 0.5f, 0.31f, 1.0f);
     _shader->SetUniform3f("lightColor", 1.0f, 1.0f, 1.0f);
     _shader->SetUniform3f("lightPosition", lightPosition.x, lightPosition.y, lightPosition.z);
+    _shader->SetUniform3f("viewPosition", _camera->getPosition());
     glBindVertexArray(_VBO);
 
     for (int i = 0; i < std::size(cubePositions); i++) {

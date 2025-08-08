@@ -42,4 +42,6 @@ public:
     void moveZ(float delta);
 
     void processMouseMovement(const qmath::Vector2 &deltaMouse);
+
+    qmath::Vector3 getPosition();
 };
