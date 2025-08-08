@@ -180,6 +180,8 @@ void Renderer::EndDrawing(){
 
     const qmath::Vector3 lightPosition(4.2f, 2.0f, 1.0f);
 
+    glBindVertexArray(_VAO);
+
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * _vertices.size(), _vertices.data(), GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * _indices.size(), _indices.data(), GL_STATIC_DRAW);
 
