@@ -13,16 +13,17 @@ set(MAIN_FILE main.cpp)
 
 add_executable(main ${MAIN_FILE} ${SRC_FILES} src/glad.o)
 
-link_directories(${CMAKE_SOURCE_DIR}/libs)
-
 target_link_libraries(main
         opengl32
         glfw3
         gdi32
 )
 
-add_custom_command(TARGET main POST_BUILD
+add_custom_command(
+        TARGET main
+        PRE_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/shaders
-        $<TARGET_FILE_DIR:main>/shaders)
-
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/shaders
+        COMMENT "Shader copying..."
+)

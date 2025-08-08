@@ -58,6 +58,10 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath){
     glDeleteShader(fragment);
 }
 
+void Shader::SetUniform1f(const char *name, float value) {
+    glUniform1f(glGetUniformLocation(ID, name), value);
+}
+
 void Shader::checkCompileErrors(unsigned int shader, std::string type)
 {
     int success;

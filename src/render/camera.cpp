@@ -2,22 +2,19 @@
 #include "math/qmath.h"
 #include <cmath>
 
-float radians(const float degrees) {
-    return degrees * M_PI / 180.0f;
-}
-
 Camera::Camera() {
     _position = (qmath::Vector3){0.0f, 0.0f, 3.0f};
     _target = (qmath::Vector3){0.0f, 0.0f, 0.0f};
 }
 
-Camera::Camera(qmath::Vector3 Position, qmath::Vector3 Target) {
-    _position = Position;
-    _target = Target;
+Camera::Camera(qmath::Vector3 position, qmath::Vector3 target, QCameraMode cameraMode) {
+    _position = position;
+    _target = target;
+    _mode = cameraMode;
 
-    _forward = qmath::Normalize(Position - _target);
+    _forward = qmath::Normalize(position - _target);
 
-    constexpr qmath::Vector3 upWorld{0.0f, 1.0f, 0.0f};
+    qmath::Vector3 upWorld(0.0f, 1.0f, 0.0f);
     _right = qmath::Normalize(qmath::Cross(upWorld, _forward));
 
     _up = qmath::Cross(_forward, _right);
@@ -48,11 +45,28 @@ void Camera::setPerspective(float fov, float aspect, float near, float far) {
     _far = far;
 }
 
-qmath::Matrix Camera::getPerspectiveMatrix() const {
-    qmath::Matrix perspectiveMatrix(0.0f);
-    perspectiveMatrix.Perspective(_fov, _aspect, _near, _far);
+void Camera::setAspect(float aspect) {
+    _aspect = aspect;
+}
 
-    return perspectiveMatrix;
+qmath::Matrix Camera::getProjectionMatrix() const {
+    if (_mode == QCameraMode::Perspective) return getPerspectiveMatrix();
+    else return getPerspectiveMatrix();
+}
+
+qmath::Matrix Camera::getPerspectiveMatrix() const {
+    qmath::Matrix perspective(0.0f);
+
+    const float tan = static_cast<float>(std::tan(_fov / 2 * M_PI / 180));
+
+    perspective[0][0] = 1 / (tan * _aspect);
+    perspective[1][1] = 1 / tan;
+    perspective[2][2] = -((_far + _near) / (_far - _near));
+
+    perspective[2][3] = -((_far * _near * 2) / (_far - _near));
+    perspective[3][2] = -1;
+
+    return perspective;
 }
 
 void Camera::moveX(float delta) {
@@ -63,7 +77,10 @@ void Camera::moveZ(float delta) {
     _position += _right * delta;
 }
 
-void Camera::processMouseMovement(float deltaX, float deltaY) {
+void Camera::processMouseMovement(const qmath::Vector2& deltaMouse) {
+    float deltaX = deltaMouse.x;
+    float deltaY = deltaMouse.y;
+
     const float sensitivity = 0.1f;
 
     yaw += deltaX * sensitivity;
@@ -73,19 +90,16 @@ void Camera::processMouseMovement(float deltaX, float deltaY) {
     if (pitch < -89.0f) pitch = -89.0f;
 
     qmath::Vector3 front;
-    front.x = cos(radians(yaw)) * cos(radians(pitch));
-    front.y = sin(radians(pitch));
-    front.z = sin(radians(yaw)) * cos(radians(pitch));
+    front.x = cos(qmath::radians(yaw)) * cos(qmath::radians(pitch));
+    front.y = sin(qmath::radians(pitch));
+    front.z = sin(qmath::radians(yaw)) * cos(qmath::radians(pitch));
 
     _forward = qmath::Normalize(front);
 
-    constexpr qmath::Vector3 upWorld{0.0f, 1.0f, 0.0f};
+    qmath::Vector3 upWorld{0.0f, 1.0f, 0.0f};
     _right = qmath::Normalize(qmath::Cross(upWorld, _forward));
 
     _up = qmath::Cross(_forward, _right);
-
-    std::cout << "Yaw: " << yaw << std::endl;
-    std::cout << "Pitch: " << pitch << std::endl;
 }
 
 

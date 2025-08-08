@@ -33,13 +33,45 @@ Window::Window(int width, int height, const char* title){
     }
 }
 
-int Window::GetWidth(){
+void Window::update() {
+    float currentFrame = glfwGetTime();
+    deltaTime = currentFrame - lastFrame;
+    lastFrame = currentFrame;
+
+    double currentMousePosX = getMousePosX();
+    double currentMousePosY = getMousePosY();
+
+    if (firstMouse) {
+        lastMousePosX = currentMousePosX;
+        lastMousePosY = currentMousePosY;
+        firstMouse = false;
+    }
+
+    deltaMousePosX = currentMousePosX - lastMousePosX;
+    deltaMousePosY = currentMousePosY - lastMousePosY;
+
+    lastMousePosX = currentMousePosX;
+    lastMousePosY = currentMousePosY;
+}
+
+float Window::getDeltaTime() const{
+    return deltaTime;
+}
+
+qmath::Vector2 Window::getDeltaMouse() const {
+    return {
+        static_cast<float>(deltaMousePosX),
+        static_cast<float>(deltaMousePosY)
+    };
+}
+
+int Window::getWidth(){
     int width, height;
     glfwGetWindowSize(_window, &width, &height);
     return width;
 }
 
-int Window::GetHeight(){
+int Window::getHeight(){
     int width, height;
     glfwGetWindowSize(_window, &width, &height);
     return height;

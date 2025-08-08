@@ -9,10 +9,11 @@
 
 void Renderer::Init(Window* window){
     _window = window;
-    _windowWidth = _window->GetWidth();
-    _windowHeight = _window->GetHeight();
+    _windowWidth = _window->getWidth();
+    _windowHeight = _window->getHeight();
 
     _shader = new Shader("shaders/vertexshader.glsl", "shaders/fragmentshader.glsl");
+    _lightingShader = new Shader("shaders/lighting_vs.glsl", "shaders/lighting_fs.glsl");
 
     glGenBuffers(1, &_VBO);
     glGenBuffers(1, &_EBO);
@@ -24,54 +25,46 @@ void Renderer::Init(Window* window){
 
     glEnable(GL_DEPTH_TEST);
 
-    qmath::Vector3 cameraPos{.x = 0.0f, .y = 0.0f, .z = 3.0f};
-    qmath::Vector3 cameraTarget{0};
+    qmath::Vector3 cameraPos(0.0f, 0.0f, 3.0f);
+    qmath::Vector3 cameraTarget(0.0f, 0.0f, 0.0f);
 
-    _camera = Camera(cameraPos, cameraTarget);
-    _camera.setPerspective(45.0f, static_cast<float>(_windowWidth) / static_cast<float>(_windowHeight), 0.1f, 100.0f);
+    _camera = new Camera(cameraPos, cameraTarget, QCameraMode::Perspective);
+    _camera->setPerspective(45.0f, static_cast<float>(_windowWidth) / static_cast<float>(_windowHeight), 0.1f, 100.0f);
+}
+
+void Renderer::SetCamera(Camera *camera) {
+    delete _camera;
+    _camera = camera;
 }
 
 void Renderer::BeginDrawing(){
-    float currentFrame = glfwGetTime();
-    deltaTime = currentFrame - lastFrame;
-    lastFrame = currentFrame;
-
-    double currentMousePosX = _window->getMousePosX();
-    double currentMousePosY = _window->getMousePosY();
-
-    if (firstMouse) {
-        lastMousePosX = currentMousePosX;
-        lastMousePosY = currentMousePosY;
-        firstMouse = false;
-    }
-
-    deltaMousePosX = currentMousePosX - lastMousePosX;
-    deltaMousePosY = currentMousePosY - lastMousePosY;
-
-    lastMousePosX = currentMousePosX;
-    lastMousePosY = currentMousePosY;
-
+    _window->update();
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    _windowWidth = _window->GetWidth();
-    _windowHeight = _window->GetHeight();
+    _windowWidth = _window->getWidth();
+    _windowHeight = _window->getHeight();
+    _camera->setAspect(static_cast<float>(_windowWidth) / static_cast<float>(_windowHeight));
 
-    float cameraSpeed = 8.0f;
+    const float cameraSpeed = 8.0f;
 
-    if(_window->IsKeyPressed(GLFW_KEY_W)) _camera.moveX(-cameraSpeed * deltaTime);
-    if(_window->IsKeyPressed(GLFW_KEY_S)) _camera.moveX(cameraSpeed * deltaTime);
+    if(_window->IsKeyPressed(GLFW_KEY_W)) _camera->moveX(-cameraSpeed * _window->getDeltaTime());
+    if(_window->IsKeyPressed(GLFW_KEY_S)) _camera->moveX(cameraSpeed * _window->getDeltaTime());
 
-    if(_window->IsKeyPressed(GLFW_KEY_A)) _camera.moveZ(-cameraSpeed * deltaTime);
-    if(_window->IsKeyPressed(GLFW_KEY_D)) _camera.moveZ(cameraSpeed * deltaTime);
+    if(_window->IsKeyPressed(GLFW_KEY_A)) _camera->moveZ(-cameraSpeed * _window->getDeltaTime());
+    if(_window->IsKeyPressed(GLFW_KEY_D)) _camera->moveZ(cameraSpeed * _window->getDeltaTime());
 
-    _camera.processMouseMovement(static_cast<float>(deltaMousePosX), (float)deltaMousePosY);
+    _camera->processMouseMovement(_window->getDeltaMouse());
 
-    qmath::Matrix view(_camera.getViewMatrix());
-    qmath::Matrix projection(_camera.getPerspectiveMatrix());
+    qmath::Matrix view(_camera->getViewMatrix());
+    qmath::Matrix projection(_camera->getProjectionMatrix());
 
     _shader->Use();
     _shader->SetUniformMatrix4f("view", view.GetPointer());
     _shader->SetUniformMatrix4f("projection", projection.GetPointer());
+
+    _lightingShader->Use();
+    _lightingShader->SetUniformMatrix4f("view", view.GetPointer());
+    _lightingShader->SetUniformMatrix4f("projection", projection.GetPointer());
 }
 
 void Renderer::ClearBackground(qcore::Color color){
@@ -128,48 +121,48 @@ void Renderer::DrawCircle(int posX, int posY, int radius, qcore::Color color){
 }
 
 void Renderer::EndDrawing(){
-    const float vertices[] = {
-        -0.5f, -0.5f, -0.5f,
-        0.5f, -0.5f, -0.5f,
-        0.5f,  0.5f, -0.5f,
-        0.5f,  0.5f, -0.5f,
-        -0.5f,  0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
+    float vertices[] = {
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
-        -0.5f, -0.5f,  0.5f,
-        0.5f, -0.5f,  0.5f,
-        0.5f,  0.5f,  0.5f,
-        0.5f,  0.5f,  0.5f, 
-        -0.5f,  0.5f,  0.5f,
-        -0.5f, -0.5f,  0.5f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
 
-        -0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f, 
-        -0.5f, -0.5f, -0.5f,
-        -0.5f, -0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
 
-        0.5f,  0.5f,  0.5f,
-        0.5f,  0.5f, -0.5f,
-        0.5f, -0.5f, -0.5f,
-        0.5f, -0.5f, -0.5f, 
-        0.5f, -0.5f,  0.5f,
-        0.5f,  0.5f,  0.5f, 
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
 
-        -0.5f, -0.5f, -0.5f, 
-        0.5f, -0.5f, -0.5f, 
-        0.5f, -0.5f,  0.5f, 
-        0.5f, -0.5f,  0.5f,
-        -0.5f, -0.5f,  0.5f,
-        -0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
 
-        -0.5f,  0.5f, -0.5f,
-        0.5f,  0.5f, -0.5f,
-        0.5f,  0.5f,  0.5f,
-        0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f, -0.5f, 
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
     };
 
     const qmath::Vector3 cubePositions[] = {
@@ -185,16 +178,29 @@ void Renderer::EndDrawing(){
         qmath::Vector3{-1.3f,  1.0f, -1.5f}
     };
 
+    const qmath::Vector3 lightPosition(4.2f, 2.0f, 1.0f);
+
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * _vertices.size(), _vertices.data(), GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * _indices.size(), _indices.data(), GL_STATIC_DRAW);
 
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
+    glVertexAttribPointer(
+        0, 3,
+        GL_FLOAT, GL_FALSE,
+        sizeof(float) * 6, static_cast<void *>(nullptr));
+
+    glVertexAttribPointer(1, 3,
+        GL_FLOAT, GL_FALSE,
+        sizeof(float) * 6, reinterpret_cast<void *>(sizeof(float) * 3));
+
     glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
 
     _shader->Use();
-    _shader->SetUniform4f("ourColor", 0.0f, 0.0f, 0.0f, 1.0f);
+    _shader->SetUniform4f("ourColor", 1.0f, 0.5f, 0.31f, 1.0f);
+    _shader->SetUniform3f("lightColor", 1.0f, 1.0f, 1.0f);
+    _shader->SetUniform3f("lightPosition", lightPosition.x, lightPosition.y, lightPosition.z);
     glBindVertexArray(_VBO);
 
     for (int i = 0; i < std::size(cubePositions); i++) {
@@ -210,14 +216,23 @@ void Renderer::EndDrawing(){
         _shader->SetUniformMatrix4f("model", model.GetPointer());
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
-    // glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, 0);
+    _lightingShader->Use();
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    qmath::Matrix model;
+    model.Translate(lightPosition.x, lightPosition.y, lightPosition.z);
+    model.Scale(0.2f, 0.2f, 0.2f);
+
+    _lightingShader->SetUniformMatrix4f("model", model.GetPointer());
+    glDrawArrays(GL_TRIANGLES, 0, 36);
 
     _window->SwapBuffers();
     _window->PollEvents();
 
-    if(glGetError() != GL_NO_ERROR) std::cout << "Has error\n";
+    GLenum err;
+    while((err = glGetError()) != GL_NO_ERROR)
+    {
+        std::cout << "OpenGL Error: " << err << std::endl;
+    }
 
     _vertices.clear();
     _indices.clear();
@@ -231,32 +246,6 @@ Renderer* Renderer::GetInstance(){
     }
 
     return _renderer;
-}
-
-qmath::Matrix Renderer::GetTransformMatrix(int posX, int posY, int width, int height){
-    int windowWidth = _window->GetWidth(); 
-    int windowHeight = _window->GetHeight();
-
-    float xRatio = 2.0f / (float)windowWidth;
-    float yRatio = 2.0f / (float)windowHeight;
-
-    float shapeWidth = width * xRatio;
-    float shapeHeight = height * yRatio;
-
-    float xOffset = posX * xRatio;
-    float yOffset = posY * yRatio;
-
-    static float zOffset = 1.0f;
-
-    if(_window->IsKeyPressed(GLFW_KEY_R)) zOffset += 0.01f;
-    if(_window->IsKeyPressed(GLFW_KEY_F)) zOffset -= 0.01f;
-
-    qmath::Matrix mat;
-    mat.Scale(shapeWidth, shapeHeight, 1);
-    mat.Translate(xOffset, -yOffset, zOffset);
-    mat.Translate(shapeWidth - 1, 1 - shapeHeight, 0.0f);
-
-    return mat;
 }
 
 Renderer::~Renderer(){

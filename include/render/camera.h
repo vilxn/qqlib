@@ -1,9 +1,12 @@
 #pragma once
 
 #include "math/qmath.h"
+#include "qcore/qcore.h"
 
 class Camera {
 private:
+    QCameraMode _mode;
+
     qmath::Vector3 _position;
     qmath::Vector3 _target;
 
@@ -19,20 +22,24 @@ private:
     float yaw = 90.0f;
     float pitch = 0.0f;
 
+    qmath::Matrix getPerspectiveMatrix() const;
+
 public:
     Camera();
 
-    Camera(qmath::Vector3 position, qmath::Vector3 target);
+    Camera(qmath::Vector3 position, qmath::Vector3 target, QCameraMode cameraMode);
 
-    [[nodiscard]] qmath::Matrix getViewMatrix() const;
+    qmath::Matrix getViewMatrix() const;
+
+    qmath::Matrix getProjectionMatrix() const;
 
     void setPerspective(float fov, float aspect, float near, float far);
 
-    [[nodiscard]] qmath::Matrix getPerspectiveMatrix() const;
+    void setAspect(float aspect);
 
     void moveX(float delta);
 
     void moveZ(float delta);
 
-    void processMouseMovement(float deltaX, float deltaY);
+    void processMouseMovement(const qmath::Vector2 &deltaMouse);
 };

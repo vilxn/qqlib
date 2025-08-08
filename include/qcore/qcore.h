@@ -6,6 +6,11 @@
 #define Q_BLACK qcore::Color(10, 10, 10, 256)
 #define Q_WHITE qcore::Color(250, 250, 250, 256)
 
+enum class QCameraMode {
+    Perspective,
+    Orthographic
+};
+
 namespace qcore{
     struct Color{
         unsigned r;

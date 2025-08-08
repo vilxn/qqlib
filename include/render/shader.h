@@ -7,6 +7,8 @@ public:
 
     Shader(const char* vertexPath, const char* fragmentPath);
 
+    void SetUniform1f(const char* name, float value);
+
     void SetUniform3f(const std::string& name, float v1, float v2, float v3);
 
     void SetUniform4f(const std::string& name, float v1, float v2, float v3, float v4);

@@ -1,17 +1,35 @@
 #pragma once
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
+#include "math/qmath.h"
 
 class Window{
 private:
     GLFWwindow* _window;
 
+    bool firstMouse = true;
+
+    float deltaTime = 0.0f;
+    float lastFrame = 0.0f;
+
+    double lastMousePosX = 0;
+    double lastMousePosY = 0;
+
+    double deltaMousePosX = 0;
+    double deltaMousePosY = 0;
+
 public:
     Window(int width, int height, const char* title);
 
-    int GetWidth();
+    void update();
 
-    int GetHeight();
+    float getDeltaTime() const;
+
+    qmath::Vector2 getDeltaMouse() const;
+
+    int getWidth();
+
+    int getHeight();
 
     double getMousePosX();
 
