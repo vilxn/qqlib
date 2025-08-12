@@ -11,6 +11,8 @@ file(GLOB_RECURSE SRC_FILES src/*.cpp)
 
 set(MAIN_FILE main.cpp)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/)
+
 add_executable(main ${MAIN_FILE} ${SRC_FILES} src/glad.o)
 
 link_directories(${CMAKE_SOURCE_DIR}/libs)
@@ -20,9 +22,4 @@ target_link_libraries(main
         glfw3
         gdi32
 )
-
-add_custom_command(TARGET main POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/shaders
-        $<TARGET_FILE_DIR:main>/shaders)
 
