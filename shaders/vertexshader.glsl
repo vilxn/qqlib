@@ -1,19 +1,18 @@
-#version 460 core
-layout (location = 0) in vec3 vertexPos;
+#version 330 core
+layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 
-out vec3 Normal;
 out vec3 FragPosition;
+out vec3 Normal;
 
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-void main(){
-    gl_Position = projection * view * model * vec4(vertexPos, 1);
+void main()
+{
+    FragPosition = vec3(model * vec4(aPos, 1.0));
+    Normal = mat3(transpose(inverse(model))) * aNormal;
 
-    mat3 normalModelMatrix = transpose(inverse(mat3(model)));
-    Normal = normalize(normalModelMatrix * aNormal);
-
-    FragPosition = vec3(model * vec4(vertexPos, 1));
+    gl_Position = projection * view * vec4(FragPosition, 1.0);
 }

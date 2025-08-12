@@ -210,8 +210,21 @@ void Renderer::EndDrawing(){
     _shader->Use();
     _shader->SetUniform4f("ourColor", 1.0f, 0.5f, 0.31f, 1.0f);
     _shader->SetUniform3f("lightColor", 1.0f, 1.0f, 1.0f);
-    _shader->SetUniform3f("lightPosition", lightPosition.x, lightPosition.y, lightPosition.z);
+    _shader->SetUniform3f("lightPosition", lightPosition);
     _shader->SetUniform3f("viewPosition", _camera->getPosition());
+
+    lightColor.x = sin(glfwGetTime() * 2.0f);
+    lightColor.y = sin(glfwGetTime() * 0.7f);
+    lightColor.z = sin(glfwGetTime() * 1.3f);
+
+    diffuseColor = lightColor   * 0.5f;
+    ambientColor = diffuseColor * 0.2f;
+
+    _shader->SetUniform3f("material.ambient", ambientColor);
+    _shader->SetUniform3f("material.diffuse", diffuseColor);
+    _shader->SetUniform3f("material.specular", 0.5f, 0.5f, 0.5f);
+    _shader->SetUniform1f("material.shininess", 32.0f);
+
     glBindVertexArray(_VBO);
 
     for (int i = 0; i < std::size(cubePositions); i++) {
@@ -234,6 +247,7 @@ void Renderer::EndDrawing(){
     model.Scale(0.2f, 0.2f, 0.2f);
 
     _lightingShader->SetUniformMatrix4f("model", model.GetPointer());
+    _lightingShader->SetUniform3f("lightColor", lightColor);
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
     _window->SwapBuffers();

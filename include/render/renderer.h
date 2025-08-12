@@ -33,6 +33,9 @@ protected:
     std::vector<unsigned int> _indices;
 
     qmath::Vector3 lightPosition;
+    qmath::Vector3 lightColor;
+    qmath::Vector3 diffuseColor;
+    qmath::Vector3 ambientColor;
 
     Renderer();
 
