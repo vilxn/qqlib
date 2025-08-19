@@ -75,58 +75,7 @@ void Renderer::BeginDrawing(){
     _lightingShader->SetUniformMatrix4f("projection", projection.GetPointer());
 }
 
-void Renderer::ClearBackground(qcore::Color color){
-    glClearColor(color.r / 256.0f, color.g / 256.0f, color.b / 256.0f, color.a / 256.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-}
 
-void Renderer::DrawRectangle(int posX, int posY, float width, float height, qcore::Color color){
-    unsigned int vertixNum = _vertices.size() / 3;
-
-    float horRatio = 2.0f / (float)_windowHeight;
-    float verRatio = 2.0f / (float)_windowHeight;
-    
-    float x = posX * horRatio - 1.0f;
-    float y = 1.0f - posY * verRatio;
-
-    // std::cout << x << " " << y << std::endl;
-    float w = width * horRatio;
-    float h = height * verRatio;
-
-    _vertices.insert(_vertices.end(), {x, y, 1.0f});
-    _vertices.insert(_vertices.end(), {x + w, y, 1.0f});
-    _vertices.insert(_vertices.end(), {x + w, y - h, 1.0f});
-    _vertices.insert(_vertices.end(), {x, y - h, 1.0f});
-
-    _indices.insert(_indices.end(), {vertixNum, vertixNum + 1, vertixNum + 2});
-    _indices.insert(_indices.end(), {vertixNum + 2, vertixNum + 3, vertixNum});
-}
-
-void Renderer::DrawCircle(int posX, int posY, int radius, qcore::Color color){
-    const int segments = 128;
-    
-    unsigned int vertixNum = _vertices.size() / 3;
-
-    float horRatio = 2.0f / (float)_windowHeight;
-    float verRatio = 2.0f / (float)_windowHeight;
-
-    float positionX = posX * horRatio - 1.0f;
-    float positionY = 1.0f - posY * verRatio;
-
-    _vertices.insert(_vertices.end(), {positionX, positionY, 1.0f});
-
-    long double angleOffset = M_PI * 2 / segments;
-    for(unsigned int i = 1; i <= segments; i++){
-        float x = cosh(angleOffset * i) * radius * horRatio;
-        float y = sinh(angleOffset * i) * radius * verRatio;
-
-        _vertices.insert(_vertices.end(), {positionX + x, positionY - y, 1.0f});
-        
-        _indices.push_back(vertixNum + i);
-        _indices.push_back(vertixNum + (i == segments ? 1 : i + 1));
-        _indices.push_back(vertixNum);
-    }
-}
 
 void Renderer::EndDrawing(){
     float vertices[] = {
@@ -174,7 +123,7 @@ void Renderer::EndDrawing(){
     };
 
     const qmath::Vector3 cubePositions[] = {
-        qmath::Vector3{0.0f,  0.0f,  0.0f},
+        qmath::Vector3{1.0f,  1.0f,  1.0f},
         qmath::Vector3{ 2.0f,  5.0f, -15.0f},
         qmath::Vector3{-1.5f, -2.2f, -2.5f},
         qmath::Vector3{-3.8f, -2.0f, -12.3f},
@@ -185,8 +134,6 @@ void Renderer::EndDrawing(){
         qmath::Vector3{ 1.5f,  0.2f, -1.5f},
         qmath::Vector3{-1.3f,  1.0f, -1.5f}
     };
-
-
 
     glBindVertexArray(_VAO);
 
@@ -233,9 +180,9 @@ void Renderer::EndDrawing(){
         model.Translate(cubePositions[i].x, cubePositions[i].y, cubePositions[i].z);
         float angle = 20.0f * i;
 
-        model.RotateX(angle);
-        model.RotateY(angle * 0.3f);
-        model.RotateZ(angle * 0.5f);
+        // model.RotateX(angle);
+        // model.RotateY(angle * 0.3f);
+        // model.RotateZ(angle * 0.5f);
 
         _shader->SetUniformMatrix4f("model", model.GetPointer());
         glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -243,6 +190,7 @@ void Renderer::EndDrawing(){
     _lightingShader->Use();
 
     qmath::Matrix model;
+
     model.Translate(lightPosition.x, lightPosition.y, lightPosition.z);
     model.Scale(0.2f, 0.2f, 0.2f);
 

@@ -49,6 +49,11 @@ void Camera::setAspect(float aspect) {
     _aspect = aspect;
 }
 
+void Camera::setSensivity(float sensivity)
+{
+    _sensivity = sensivity;
+}
+
 qmath::Matrix Camera::getProjectionMatrix() const {
     if (_mode == QCameraMode::Perspective) return getPerspectiveMatrix();
     else return getPerspectiveMatrix();
@@ -81,10 +86,8 @@ void Camera::processMouseMovement(const qmath::Vector2& deltaMouse) {
     float deltaX = deltaMouse.x;
     float deltaY = deltaMouse.y;
 
-    const float sensitivity = 0.1f;
-
-    yaw += deltaX * sensitivity;
-    pitch += deltaY * sensitivity;
+    yaw += deltaX * _sensivity;
+    pitch += deltaY * _sensivity;
 
     if (pitch > 89.0f) pitch = 89.0f;
     if (pitch < -89.0f) pitch = -89.0f;

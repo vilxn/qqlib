@@ -14,6 +14,8 @@ private:
     qmath::Vector3 _right;
     qmath::Vector3 _forward;
 
+    float _sensivity = 0.05f;
+
     float _fov = 45.0f;
     float _aspect = 4.0f / 3.0f;
     float _near = 0.1f;
@@ -36,6 +38,8 @@ public:
     void setPerspective(float fov, float aspect, float near, float far);
 
     void setAspect(float aspect);
+
+    void setSensivity(float sensivity);
 
     void moveX(float delta);
 

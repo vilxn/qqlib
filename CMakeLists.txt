@@ -9,7 +9,8 @@ link_directories(${CMAKE_SOURCE_DIR}/libs)
 
 file(GLOB_RECURSE SRC_FILES src/*.cpp)
 
-set(MAIN_FILE main.cpp)
+set(MAIN_FILE main.cpp
+        src/render/renderer-basic-shapes.cpp)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/)
 
